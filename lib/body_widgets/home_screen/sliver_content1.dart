@@ -4,7 +4,8 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class SliverContent extends StatelessWidget {
   final PageController pageController;
 
-  const SliverContent({Key? key, required this.pageController}) : super(key: key);
+  const SliverContent({Key? key, required this.pageController})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,45 +19,49 @@ class SliverContent extends StatelessWidget {
               controller: pageController,
               scrollDirection: Axis.horizontal,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(
-                        "assets/flower1.jpg",
-                        fit: BoxFit.fitWidth,
-                      ),
-                     
-                    ],
+                Padding(
+                  padding: const EdgeInsets.only(left: 6.0, right: 6.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          "assets/flower1.jpg",
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(
-                        "assets/flower3.jpg",
-                        fit: BoxFit.fitWidth,
-                      ),
-                     
-                    ],
+                Padding(
+                  padding: const EdgeInsets.only(left: 6.0, right: 6.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          "assets/flower1.jpg",
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(
-                        "assets/flower1.jpg",
-                        fit: BoxFit.fitWidth,
-                      ),
-                    
-                   
-                    
-                    ],
+                Padding(
+                  padding: const EdgeInsets.only(left: 6.0, right: 6.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          "assets/flower1.jpg",
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -76,6 +81,6 @@ class SliverContent extends StatelessWidget {
           ],
         ),
       ),
-      ) ;
+    );
   }
 }
