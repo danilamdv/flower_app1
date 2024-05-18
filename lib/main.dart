@@ -3,6 +3,7 @@ import 'package:flower_app/body_widgets/home_screen/sliver_content1.dart';
 import 'package:flower_app/body_widgets/home_screen/sliver_content2.dart';
 import 'package:flower_app/body_widgets/home_screen/sliver_content3.dart';
 import 'package:flower_app/body_widgets/home_screen/slivergrid_content4.dart';
+import 'package:flower_app/bottomnavigatonbar/custom_bottom_navbar.dart';
 import 'package:flutter/material.dart';
 
 void main(List<String> args) {
@@ -18,6 +19,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final PageController _pageController = PageController();
+  int _currentIndex = 0;
+  void _onNavBarTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,30 +55,9 @@ class _MyAppState extends State<MyApp> {
               ],
             ),
           ),
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.people_outline_outlined),
-                label: 'Community',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart_outlined),
-                label: 'cart',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.mark_unread_chat_alt_outlined),
-                label: 'expert',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle_outlined),
-                label: 'profile',
-              ),
-            ],
+          bottomNavigationBar: CustomBottomNavBar(
+            currentIndex: _currentIndex,
+            onTap: _onNavBarTapped,
           ),
         ));
   }
