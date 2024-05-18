@@ -15,7 +15,7 @@ class CustomSliverGrid extends StatelessWidget {
             ),
           );
         },
-        childCount: 10, // Oluşturulacak kart sayısı
+        childCount: 10,
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

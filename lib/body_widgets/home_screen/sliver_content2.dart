@@ -51,7 +51,6 @@ class SliverContent2 extends StatelessWidget {
                   IconData iconData;
                   String text = "";
 
-                  // Her bir Card için farklı bir icon belirleme
                   switch (index) {
                     case 0:
                       iconData = Icons.trending_up;
