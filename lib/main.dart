@@ -1,8 +1,6 @@
 import 'package:flower_app/appbar/custom_appbar.dart';
-import 'package:flower_app/body_widgets/home_screen/sliver_content1.dart';
-import 'package:flower_app/body_widgets/home_screen/sliver_content2.dart';
-import 'package:flower_app/body_widgets/home_screen/sliver_content3.dart';
-import 'package:flower_app/body_widgets/home_screen/slivergrid_content4.dart';
+import 'package:flower_app/body_widgets/home_screen/customscroolview0.dart';
+import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
 import 'package:flower_app/bottomnavigatonbar/custom_bottom_navbar.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +16,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final PageController _pageController = PageController();
   int _currentIndex = 0;
+  late List<Widget> AllPages;
+  late scrollviewcontent homescreen1;
+  late ProfilePage profilePage2;
+  @override
+  void initState() {
+       homescreen1 = scrollviewcontent(pageController: PageController());
+    profilePage2 = ProfilePage();
+    AllPages = [homescreen1,homescreen1, homescreen1,homescreen1, profilePage2];
+    super.initState();
+  }
+
   void _onNavBarTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -31,30 +39,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          appBar: CustomAppBar(),
-          body: Container(
-            padding: EdgeInsets.all(18),
-            child: CustomScrollView(
-              slivers: [
-                SliverContent(
-                  pageController: _pageController,
-                ),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 15,
-                  ),
-                ),
-                SliverContent2(),
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: 20,
-                  ),
-                ),
-                SliverContent3(),
-                CustomSliverGrid(),
-              ],
-            ),
-          ),
+          appBar: _currentIndex==0 ?  CustomAppBar() : null,
+          body: AllPages[_currentIndex],
           bottomNavigationBar: CustomBottomNavBar(
             currentIndex: _currentIndex,
             onTap: _onNavBarTapped,

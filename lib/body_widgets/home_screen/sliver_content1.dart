@@ -4,7 +4,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class SliverContent extends StatelessWidget {
   final PageController pageController;
 
-  const SliverContent({Key? key, required this.pageController})
+  const SliverContent({Key? key, required this.pageController,})
       : super(key: key);
 
   @override
