@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomSliverGrid extends StatelessWidget {
-  const CustomSliverGrid({Key? key}) : super(key: key);
+class HomeScreenSliverGrid extends StatelessWidget {
+  const HomeScreenSliverGrid({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

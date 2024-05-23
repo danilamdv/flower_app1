@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SliverContent3 extends StatelessWidget {
-  const SliverContent3({Key? key}) : super(key: key);
+class HomeScreenSliverContent3 extends StatelessWidget {
+  const HomeScreenSliverContent3({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

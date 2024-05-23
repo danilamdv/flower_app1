@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SliverContent2 extends StatelessWidget {
+class HomeScreenSliverContent2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(

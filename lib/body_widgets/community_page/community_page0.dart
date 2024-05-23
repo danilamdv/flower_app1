@@ -1,7 +1,6 @@
 import 'package:flower_app/appbar/community_appbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CommunityCard extends StatelessWidget {
   const CommunityCard({super.key});
@@ -146,82 +145,85 @@ class CommunityCard extends StatelessWidget {
             SliverToBoxAdapter(
               child: Container(
                 height: screenHeight * 0.04,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                elevation: 0,
-                                foregroundColor: Colors.black,
-                                side: BorderSide(width: 1, color: Colors.grey)),
-                            onPressed: () {},
-                            child: Center(
-                              child: Text("all",
-                                  style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold)),
-                            )),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                elevation: 0,
-                                foregroundColor: Colors.black,
-                                side: BorderSide(width: 1, color: Colors.grey)),
-                            onPressed: () {},
-                            child: Center(
-                              child: Text(
-                                "FAQS",
-                                style: TextStyle(
-                                    fontSize: 7.8, fontWeight: FontWeight.bold),
-                                maxLines: 1,
-                              ),
-                            )),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 4),
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                elevation: 0,
-                                foregroundColor: Colors.black,
-                                side: BorderSide(width: 1, color: Colors.grey)),
-                            onPressed: () {},
-                            child: Center(
-                                child: Text("Gardening",
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Container(
+                          width: 70,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  elevation: 0,
+                                  foregroundColor: Colors.black,
+                                  side: BorderSide(width: 1, color: Colors.grey)),
+                              onPressed: () {},
+                              child: Center(
+                                child: Text("all",
                                     style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold)))),
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold)),
+                              )),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              elevation: 0,
-                              foregroundColor: Colors.black,
-                              side: BorderSide(width: 1, color: Colors.grey)),
-                          onPressed: () {},
-                          child: Center(
-                              child: Text("Plantcore",
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Container(
+                          width: 80,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  elevation: 0,
+                                  foregroundColor: Colors.black,
+                                  side: BorderSide(width: 1, color: Colors.grey)),
+                              onPressed: () {},
+                              child: Center(
+                                child: Text(
+                                  "FAQS",
                                   style: TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.bold)))),
-                    )
-                  ],
+                                      fontSize: 9, fontWeight: FontWeight.bold),
+                                  maxLines: 1,
+                                ),
+                              )),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: Container(
+                          width: 100,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  elevation: 0,
+                                  foregroundColor: Colors.black,
+                                  side: BorderSide(width: 1, color: Colors.grey)),
+                              onPressed: () {},
+                              child: Center(
+                                  child: Text("Gardening",
+                                      style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold)))),
+                        ),
+                      ),
+                      Container(
+                        width: 100,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                elevation: 0,
+                                foregroundColor: Colors.black,
+                                side: BorderSide(width: 1, color: Colors.grey)),
+                            onPressed: () {},
+                            child: Center(
+                                child: Text("Plantcore",
+                                    style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold)))),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -298,7 +300,7 @@ class CommunityCard extends StatelessWidget {
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(right: 10),
-                                        child:  Icon(
+                                        child: Icon(
                                           CupertinoIcons.chat_bubble_text,
                                           size: 22,
                                         ),
@@ -346,11 +348,11 @@ class CommunityCard extends StatelessWidget {
                                       color: Colors.black, fontSize: 13),
                                 ),
                                 onPressed: () {},
-                                icon:Icon(
-                                   color: Colors.black,
-                                      CupertinoIcons.arrow_turn_up_left,
-                                      size: 22,
-                                    )),
+                                icon: Icon(
+                                  color: Colors.black,
+                                  CupertinoIcons.arrow_turn_up_left,
+                                  size: 22,
+                                )),
                           ],
                         ),
                       ),
@@ -358,11 +360,13 @@ class CommunityCard extends StatelessWidget {
                   ],
                 ),
               ),
-            ) , SliverToBoxAdapter( 
-              child: SizedBox( height: 10,),
             ),
-                
-              SliverToBoxAdapter(
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 10,
+              ),
+            ),
+            SliverToBoxAdapter(
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
@@ -444,12 +448,24 @@ class CommunityCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                  Expanded(
-                    flex: 9,
-                    child: Container( 
-                      child: Image.asset("assets/flower1.jpg" , fit: BoxFit.cover ,) ,
+                    Expanded(
+                      flex: 9,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15 , right: 15),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              "assets/flower1.jpg",
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
                     Expanded(
                       flex: 2,
                       child: Container(
@@ -475,10 +491,10 @@ class CommunityCard extends StatelessWidget {
                                 ),
                                 onPressed: () {},
                                 icon: Icon(
-                                   color: Colors.black,
-                                      CupertinoIcons.arrow_turn_up_left,
-                                      size: 22,
-                                    )),
+                                  color: Colors.black,
+                                  CupertinoIcons.arrow_turn_up_left,
+                                  size: 22,
+                                )),
                           ],
                         ),
                       ),

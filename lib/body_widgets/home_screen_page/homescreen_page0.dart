@@ -18,7 +18,7 @@ class scrollviewcontent extends StatelessWidget {
       padding: EdgeInsets.all(18),
       child: CustomScrollView(
         slivers: [
-          SliverContent(
+          HomeScreenSliverContent(
             pageController: _pageController,
           ),
           SliverToBoxAdapter(
@@ -26,14 +26,14 @@ class scrollviewcontent extends StatelessWidget {
               height: 15,
             ),
           ),
-          SliverContent2(),
+          HomeScreenSliverContent2(),
           SliverToBoxAdapter(
             child: SizedBox(
               height: 20,
             ),
           ),
-          SliverContent3(),
-          CustomSliverGrid(),
+          HomeScreenSliverContent3(),
+          HomeScreenSliverGrid(),
         ],
       ),
     );
