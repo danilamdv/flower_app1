@@ -1,3 +1,4 @@
+import 'package:flower_app/appbar/profile_page_appbar.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -10,17 +11,9 @@ class ProfilePage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black12,
-          title: Text(
-            'Profile',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        appBar: ProfilePageAppbar(),
         body: Container(
-          padding: EdgeInsets.only(right: 10, left: 10, top: 5),
+          padding: EdgeInsets.only(right: 18, left: 18, top: 2),
           color: Colors.black12,
           child: CustomScrollView(
             slivers: [

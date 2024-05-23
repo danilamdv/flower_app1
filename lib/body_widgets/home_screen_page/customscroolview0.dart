@@ -1,7 +1,7 @@
-import 'package:flower_app/body_widgets/home_screen/sliver_content1.dart';
-import 'package:flower_app/body_widgets/home_screen/sliver_content2.dart';
-import 'package:flower_app/body_widgets/home_screen/sliver_content3.dart';
-import 'package:flower_app/body_widgets/home_screen/slivergrid_content4.dart';
+import 'package:flower_app/body_widgets/home_screen_page/sliver_content1.dart';
+import 'package:flower_app/body_widgets/home_screen_page/sliver_content2.dart';
+import 'package:flower_app/body_widgets/home_screen_page/sliver_content3.dart';
+import 'package:flower_app/body_widgets/home_screen_page/slivergrid_content4.dart';
 import 'package:flutter/material.dart';
 
 class scrollviewcontent extends StatelessWidget {
