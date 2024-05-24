@@ -1,4 +1,7 @@
 import 'package:flower_app/appbar/profile_page_appbar.dart';
+import 'package:flower_app/body_widgets/profile_page/sliver_content1.dart';
+import 'package:flower_app/body_widgets/profile_page/sliver_content2.dart';
+import 'package:flower_app/body_widgets/profile_page/sliver_content3.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -17,146 +20,22 @@ class ProfilePage extends StatelessWidget {
           color: Colors.black12,
           child: CustomScrollView(
             slivers: [
-              SliverToBoxAdapter(
-                child: Container(
-                    width: screenWidth * 0.9,
-                    height: screenHeight * 0.18,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: AssetImage("assets/flower1.jpg"),
-                              radius: 25,
-                            ),
-                            title: Text('Jony Coin'),
-                            subtitle: Text('Monthly home subscription'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.black12,
-                          thickness: 0.5,
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.calendar_month),
-                            title: Text('Mary s Brithay'),
-                            subtitle: Text('Wants red roses'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
+              ProfilePageSlivercontent1(screenWidth: screenWidth, screenHeight: screenHeight),
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 15,
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Container(
-                    width: screenWidth * 0.9,
-                    height: screenHeight * 0.35,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.shopping_bag_outlined),
-                            title: Text('My purchases'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.black12,
-                          thickness: 0.5,
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.monetization_on_outlined),
-                            title: Text('SGCoins'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.black12,
-                          thickness: 0.5,
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.calendar_month_outlined),
-                            title: Text('Calendar'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.black12,
-                          thickness: 0.5,
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.subscriptions_outlined),
-                            title: Text('Subscription'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
+              ProfilePageSliverContent2(screenWidth: screenWidth, screenHeight: screenHeight),
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 15,
                 ),
               ),
-              SliverToBoxAdapter(
-                child: Container(
-                    width: screenWidth * 0.9,
-                    height: screenHeight * 0.26,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.white),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.settings),
-                            title: Text('Settings'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.black12,
-                          thickness: 0.5,
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.location_on_outlined),
-                            title: Text('Adresses'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                        Divider(
-                          color: Colors.black12,
-                          thickness: 0.5,
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            leading: Icon(Icons.support_agent),
-                            title: Text('Support'),
-                            trailing: Icon(Icons.navigate_next),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
+              ProfilePageSliverContent3(screenWidth: screenWidth, screenHeight: screenHeight),
             ],
           ),
         ));
   }
 }
+
