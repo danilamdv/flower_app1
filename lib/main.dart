@@ -1,5 +1,6 @@
 import 'package:flower_app/appbar/home_screen_appbar.dart';
 import 'package:flower_app/body_widgets/card_page/empty_card_page.dart';
+import 'package:flower_app/body_widgets/catolog_page/catolog_page0.dart';
 import 'package:flower_app/body_widgets/community_page/community_page0.dart';
 import 'package:flower_app/body_widgets/home_screen_page/homescreen_page0.dart';
 import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
@@ -20,17 +21,19 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _currentIndex = 0;
   late List<Widget> AllPages;
-  late scrollviewcontent homescreen1;
-  late ProfilePage profilePage2;
-  late EmptyPage emptyPage;
-  late CommunityCard communityCard;
+  late HomeScreenPage homescreen1;
+  late ProfilePage profilePage5;
+  late EmptyPage emptyPage3;
+  late CommunityCard communityCard2;
+  late CatologPage catologPage4;
   @override
   void initState() {
-    homescreen1 = scrollviewcontent(pageController: PageController());
-    profilePage2 = ProfilePage();
-    emptyPage = EmptyPage();
-    communityCard = CommunityCard();
-    AllPages = [homescreen1, communityCard, emptyPage, homescreen1, profilePage2];
+    homescreen1 = HomeScreenPage(pageController: PageController());
+    profilePage5 = ProfilePage();
+    emptyPage3 = EmptyPage();
+    communityCard2 = CommunityCard();
+    catologPage4 = CatologPage();
+    AllPages = [homescreen1, communityCard2, emptyPage3, catologPage4 , profilePage5];
     super.initState();
   }
 

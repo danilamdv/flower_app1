@@ -31,7 +31,7 @@ class CustomBottomNavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.mark_unread_chat_alt_outlined),
-          label: 'Expert',
+          label: 'Catolog',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.account_circle_outlined),

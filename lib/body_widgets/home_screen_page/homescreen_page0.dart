@@ -4,8 +4,8 @@ import 'package:flower_app/body_widgets/home_screen_page/sliver_content3.dart';
 import 'package:flower_app/body_widgets/home_screen_page/slivergrid_content4.dart';
 import 'package:flutter/material.dart';
 
-class scrollviewcontent extends StatelessWidget {
-  const scrollviewcontent({
+class HomeScreenPage extends StatelessWidget {
+  const HomeScreenPage({
     super.key,
     required PageController pageController,
   }) : _pageController = pageController;

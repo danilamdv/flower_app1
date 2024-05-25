@@ -161,7 +161,7 @@ class AnswerPage extends StatelessWidget {
                   ),
                 ),
               ),
-          SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 15, bottom: 10),
                   child: Container(
@@ -179,17 +179,23 @@ class AnswerPage extends StatelessWidget {
                             children: [
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , right: 10, top: 15),
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 10, top: 15),
                                   child: Text(
-                                    "I needs Plant well i want to make the world is beaituful , can you help me ?", style:  TextStyle( fontSize: 15 , fontWeight: FontWeight.bold),
+                                    "I needs Plant well i want to make the world is beaituful , can you help me ?",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , top: 10),
+                                  padding:
+                                      const EdgeInsets.only(left: 20, top: 10),
                                   child: Text(
-                                    "24 answer", style: TextStyle(  fontSize: 12 ),
+                                    "24 answer",
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                 ),
                               ),
@@ -199,232 +205,7 @@ class AnswerPage extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10 ,left: 5),
-                            child: Container(
-                              child: Row(
-                                children: [
-                                  TextButton.icon(
-                                      label: Text(
-                                        "43",
-                                        style: TextStyle(
-                                            fontSize: 11, color: Colors.black),
-                                      ),
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        color: Colors.black,
-                                        CupertinoIcons.hand_thumbsup_fill,
-                                        size: 23,
-                                      )),
-                                  TextButton.icon(
-                                      label: Text(
-                                        "Reply",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 13),
-                                      ),
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        color: Colors.black,
-                                        CupertinoIcons.arrow_turn_up_left,
-                                        size: 22,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only( bottom: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color.fromARGB(255, 206, 204, 204),
-                    ),
-                    height: screenHeight * 0.17,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , right: 10, top: 15),
-                                  child: Text(
-                                    "I needs Plant well i want to make the world is beaituful , can you help me ?", style:  TextStyle( fontSize: 15 , fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , top: 10),
-                                  child: Text(
-                                    "24 answer", style: TextStyle(  fontSize: 12 ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10 ,left: 5),
-                            child: Container(
-                              child: Row(
-                                children: [
-                                  TextButton.icon(
-                                      label: Text(
-                                        "43",
-                                        style: TextStyle(
-                                            fontSize: 11, color: Colors.black),
-                                      ),
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        color: Colors.black,
-                                        CupertinoIcons.hand_thumbsup_fill,
-                                        size: 23,
-                                      )),
-                                  TextButton.icon(
-                                      label: Text(
-                                        "Reply",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 13),
-                                      ),
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        color: Colors.black,
-                                        CupertinoIcons.arrow_turn_up_left,
-                                        size: 22,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only( bottom: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color.fromARGB(255, 206, 204, 204),
-                    ),
-                    height: screenHeight * 0.17,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , right: 10, top: 15),
-                                  child: Text(
-                                    "I needs Plant well i want to make the world is beaituful , can you help me ?", style:  TextStyle( fontSize: 15 , fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , top: 10),
-                                  child: Text(
-                                    "24 answer", style: TextStyle(  fontSize: 12 ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10 ,left: 5),
-                            child: Container(
-                              child: Row(
-                                children: [
-                                  TextButton.icon(
-                                      label: Text(
-                                        "43",
-                                        style: TextStyle(
-                                            fontSize: 11, color: Colors.black),
-                                      ),
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        color: Colors.black,
-                                        CupertinoIcons.hand_thumbsup_fill,
-                                        size: 23,
-                                      )),
-                                  TextButton.icon(
-                                      label: Text(
-                                        "Reply",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 13),
-                                      ),
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        color: Colors.black,
-                                        CupertinoIcons.arrow_turn_up_left,
-                                        size: 22,
-                                      )),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ), SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only( bottom: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color.fromARGB(255, 206, 204, 204),
-                    ),
-                    height: screenHeight * 0.17,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , right: 10, top: 15),
-                                  child: Text(
-                                    "I needs Plant well i want to make the world is beaituful , can you help me ?", style:  TextStyle( fontSize: 15 , fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , top: 10),
-                                  child: Text(
-                                    "24 answer", style: TextStyle(  fontSize: 12 ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10 ,left: 5),
+                            padding: const EdgeInsets.only(bottom: 10, left: 5),
                             child: Container(
                               child: Row(
                                 children: [
@@ -462,10 +243,9 @@ class AnswerPage extends StatelessWidget {
                   ),
                 ),
               ),
-            
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.only( bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 10),
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
@@ -481,17 +261,23 @@ class AnswerPage extends StatelessWidget {
                             children: [
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , right: 10, top: 15),
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 10, top: 15),
                                   child: Text(
-                                    "I needs Plant well i want to make the world is beaituful , can you help me ?", style:  TextStyle( fontSize: 15 , fontWeight: FontWeight.bold),
+                                    "I needs Plant well i want to make the world is beaituful , can you help me ?",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
                               Container(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 20 , top: 10),
+                                  padding:
+                                      const EdgeInsets.only(left: 20, top: 10),
                                   child: Text(
-                                    "24 answer", style: TextStyle(  fontSize: 12 ),
+                                    "24 answer",
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                 ),
                               ),
@@ -501,7 +287,253 @@ class AnswerPage extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10 ,left: 5),
+                            padding: const EdgeInsets.only(bottom: 10, left: 5),
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  TextButton.icon(
+                                      label: Text(
+                                        "43",
+                                        style: TextStyle(
+                                            fontSize: 11, color: Colors.black),
+                                      ),
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        color: Colors.black,
+                                        CupertinoIcons.hand_thumbsup_fill,
+                                        size: 23,
+                                      )),
+                                  TextButton.icon(
+                                      label: Text(
+                                        "Reply",
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 13),
+                                      ),
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        color: Colors.black,
+                                        CupertinoIcons.arrow_turn_up_left,
+                                        size: 22,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 206, 204, 204),
+                    ),
+                    height: screenHeight * 0.17,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 10, top: 15),
+                                  child: Text(
+                                    "I needs Plant well i want to make the world is beaituful , can you help me ?",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 20, top: 10),
+                                  child: Text(
+                                    "24 answer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10, left: 5),
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  TextButton.icon(
+                                      label: Text(
+                                        "43",
+                                        style: TextStyle(
+                                            fontSize: 11, color: Colors.black),
+                                      ),
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        color: Colors.black,
+                                        CupertinoIcons.hand_thumbsup_fill,
+                                        size: 23,
+                                      )),
+                                  TextButton.icon(
+                                      label: Text(
+                                        "Reply",
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 13),
+                                      ),
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        color: Colors.black,
+                                        CupertinoIcons.arrow_turn_up_left,
+                                        size: 22,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 206, 204, 204),
+                    ),
+                    height: screenHeight * 0.17,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 10, top: 15),
+                                  child: Text(
+                                    "I needs Plant well i want to make the world is beaituful , can you help me ?",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 20, top: 10),
+                                  child: Text(
+                                    "24 answer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10, left: 5),
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  TextButton.icon(
+                                      label: Text(
+                                        "43",
+                                        style: TextStyle(
+                                            fontSize: 11, color: Colors.black),
+                                      ),
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        color: Colors.black,
+                                        CupertinoIcons.hand_thumbsup_fill,
+                                        size: 23,
+                                      )),
+                                  TextButton.icon(
+                                      label: Text(
+                                        "Reply",
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 13),
+                                      ),
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        color: Colors.black,
+                                        CupertinoIcons.arrow_turn_up_left,
+                                        size: 22,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 206, 204, 204),
+                    ),
+                    height: screenHeight * 0.17,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 10, top: 15),
+                                  child: Text(
+                                    "I needs Plant well i want to make the world is beaituful , can you help me ?",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 20, top: 10),
+                                  child: Text(
+                                    "24 answer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10, left: 5),
                             child: Container(
                               child: Row(
                                 children: [
