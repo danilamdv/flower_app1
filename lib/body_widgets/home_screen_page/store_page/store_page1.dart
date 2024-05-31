@@ -1,8 +1,8 @@
 import 'package:flower_app/body_widgets/product_page/product_page0.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreenSliverGrid0 extends StatelessWidget {
-  const HomeScreenSliverGrid0({Key? key}) : super(key: key);
+class HomeScreenSliverGrid1 extends StatelessWidget {
+  const HomeScreenSliverGrid1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class HomeScreenSliverGrid0 extends StatelessWidget {
             child: Card(
               child: Container(
                 alignment: Alignment.center,
-                child: Text('Item $index'),
+                child: Text('store page item : $index'),
               ),
             ),
           );

@@ -1,5 +1,6 @@
 import 'package:flower_app/appbar/home_screen_appbar.dart';
 import 'package:flower_app/body_widgets/card_page/empty_card_page.dart';
+import 'package:flower_app/body_widgets/card_page/mycard_page0.dart';
 import 'package:flower_app/body_widgets/catolog_page/catolog_page0.dart';
 import 'package:flower_app/body_widgets/community_page/community_page0.dart';
 import 'package:flower_app/body_widgets/home_screen_page/homescreen_page0.dart';
@@ -26,14 +27,22 @@ class _MyAppState extends State<MyApp> {
   late EmptyPage emptyPage3;
   late CommunityCard communityCard2;
   late CatologPage catologPage4;
+  late MyCartPage myCardPage3;
   @override
   void initState() {
     homescreen1 = HomeScreenPage(pageController: PageController());
+    myCardPage3 = MyCartPage();
     profilePage5 = ProfilePage();
     emptyPage3 = EmptyPage();
     communityCard2 = CommunityCard();
     catologPage4 = CatologPage();
-    AllPages = [homescreen1, communityCard2, emptyPage3, catologPage4 , profilePage5];
+    AllPages = [
+      homescreen1,
+      communityCard2,
+      myCardPage3,
+      catologPage4,
+      profilePage5
+    ];
     super.initState();
   }
 

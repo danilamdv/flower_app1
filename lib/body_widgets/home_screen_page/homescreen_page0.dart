@@ -2,6 +2,8 @@ import 'package:flower_app/body_widgets/home_screen_page/sliver_content1.dart';
 import 'package:flower_app/body_widgets/home_screen_page/sliver_content2.dart';
 import 'package:flower_app/body_widgets/home_screen_page/sliver_content3.dart';
 import 'package:flower_app/body_widgets/home_screen_page/slivergrid_content4.dart';
+import 'package:flower_app/body_widgets/home_screen_page/store_page/store_page0.dart';
+import 'package:flower_app/body_widgets/home_screen_page/store_page/store_page1.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreenPage extends StatelessWidget {
@@ -33,7 +35,9 @@ class HomeScreenPage extends StatelessWidget {
             ),
           ),
           HomeScreenSliverContent3(),
-          HomeScreenSliverGrid(),
+          HomeScreenSliverGrid0(),
+          HomeScreenSliverContent4(),
+          HomeScreenSliverGrid1(),
         ],
       ),
     );

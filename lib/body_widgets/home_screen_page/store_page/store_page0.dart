@@ -1,7 +1,8 @@
+import 'package:flower_app/body_widgets/home_screen_page/store_page/store_page2.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreenSliverContent3 extends StatelessWidget {
-  const HomeScreenSliverContent3({Key? key}) : super(key: key);
+class HomeScreenSliverContent4 extends StatelessWidget {
+  const HomeScreenSliverContent4({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class HomeScreenSliverContent3 extends StatelessWidget {
                 Expanded(
                   flex: 4,
                   child: Text(
-                    "Recommended",
+                    "all stores",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black54,
@@ -27,7 +28,12 @@ class HomeScreenSliverContent3 extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MarketPage()),
+                      );
+                    },
                     icon: Icon(Icons.navigate_next),
                   ),
                 ),
