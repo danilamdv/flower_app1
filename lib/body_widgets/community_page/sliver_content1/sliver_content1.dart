@@ -3,9 +3,10 @@ import 'package:flower_app/body_widgets/community_page/sliver_content1/ask_quest
 import 'package:flower_app/body_widgets/community_page/sliver_content1/create_post_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CommunityPageSliverContent1 extends StatelessWidget {
-  const CommunityPageSliverContent1({
+  CommunityPageSliverContent1({
     super.key,
     required this.screenWidth,
     required this.screenHeight,
@@ -16,17 +17,18 @@ class CommunityPageSliverContent1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return SliverToBoxAdapter(
       child: Column(
         children: [
           Card(
             child: Container(
-              padding: EdgeInsets.only(left: 15),
+              padding: EdgeInsets.only(left: 15.r),
               alignment: Alignment.centerLeft,
               width: screenWidth * 0.9,
               height: screenHeight * 0.06,
               decoration: BoxDecoration(
-                  border: Border.all(width: 2, color: Colors.grey),
+                  border: Border.all(width: 2.0.w, color: Colors.grey),
                   borderRadius: BorderRadius.circular(9.0),
                   color: Colors.white,
                   boxShadow: [
@@ -38,7 +40,7 @@ class CommunityPageSliverContent1 extends StatelessWidget {
               child: Text(
                 "what do you want to ask or share?",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.black54),
+                    fontWeight: FontWeight.bold, color: Colors.black54 , fontSize: 10.sp , ),
               ),
             ),
           ),
@@ -68,20 +70,20 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.message_outlined,
-                            size: 18,
+                            size: 18.r,
                           ),
                           SizedBox(
-                            width: 7,
+                            width: 7.w,
                           ),
                           Text(
-                            "ask",
+                            "ask", style:  TextStyle( fontSize: 12.sp   ),
                           )
                         ],
                       )),
                 ),
                 Container(
                   height: screenHeight * 0.02,
-                  width: 1,
+                  width: 1.0.w,
                   color: Colors.grey,
                 ),
                 Expanded(
@@ -96,25 +98,28 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AnswerPage(screenWidth: screenWidth, screenHeight: screenHeight,),
+                              builder: (context) => AnswerPage(
+                                screenWidth: screenWidth,
+                                screenHeight: screenHeight,
+                              ),
                             ));
                       },
                       child: Row(
                         children: [
                           Icon(
                             CupertinoIcons.plus_bubble,
-                            size: 18,
+                            size: 18.r,
                           ),
                           SizedBox(
-                            width: 7,
+                            width: 7.w,
                           ),
-                          Text("Answer")
+                          Text("Answer" , style: TextStyle( fontSize: 12.0.sp ),)
                         ],
                       )),
                 ),
                 Container(
                   height: screenHeight * 0.02,
-                  width: 1,
+                  width: 1.0.w,
                   color: Colors.grey,
                 ),
                 Expanded(
@@ -139,12 +144,12 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                         children: [
                           Icon(
                             CupertinoIcons.photo_on_rectangle,
-                            size: 18,
+                            size: 18.0.r,
                           ),
                           SizedBox(
-                            width: 7,
+                            width: 7.w,
                           ),
-                          Text("Post")
+                          Text("Post" , style:  TextStyle( fontSize:  12.0.sp  ),)
                         ],
                       )),
                 )

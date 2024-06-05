@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CardAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -7,18 +8,18 @@ class CardAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        toolbarHeight: 70,
-        titleSpacing: 21,
+        toolbarHeight: 70.h,
+        titleSpacing: 21.w,
         title: Text(
           "My Cart",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold , fontSize: 20.sp),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 20),
+            padding:  EdgeInsets.only(right: 20.r),
             child: Container(
-              height: 35,
-              width: 35,
+              height: 35.h,
+              width: 35.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -27,7 +28,7 @@ class CardAppbar extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(
                 Icons.search,
                 color: Colors.black,
-                size: 24,
+                size: 24.r,
               ),
             ),
           ),

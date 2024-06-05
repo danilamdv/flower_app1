@@ -1,5 +1,9 @@
+import 'package:flower_app/body_widgets/profile_page/calendar_page/calendar_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class ProfilePageSliverContent2 extends StatelessWidget {
   const ProfilePageSliverContent2({
@@ -15,51 +19,78 @@ class ProfilePageSliverContent2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
-          width: screenWidth * 0.9,
+          width: screenWidth * 1,
           height: screenHeight * 0.35,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: Colors.white),
+              borderRadius: BorderRadius.circular(12), color: Colors.white),
           child: Column(
             children: [
               Expanded(
-                child: ListTile(
-                  leading: Icon(Icons.shopping_bag_outlined),
-                  title: Text('My purchases'),
-                  trailing: Icon(Icons.navigate_next),
+                flex: 25,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      border:
+                          Border(bottom: BorderSide(color: Colors.black12))),
+                  child: ListTile(
+                    leading: Icon(Icons.shopping_bag_outlined),
+                    title: Text('My purchases',
+                        style: TextStyle(
+                            fontSize: 11.sp, fontWeight: FontWeight.bold)),
+                    trailing: Icon(Icons.navigate_next, color: Colors.grey),
+                  ),
                 ),
               ),
-              Divider(
-                color: Colors.black12,
-                thickness: 0.5,
-              ),
               Expanded(
-                child: ListTile(
-                  leading: Icon(Icons.monetization_on_outlined),
-                  title: Text('SGCoins'),
-                  trailing: Icon(Icons.navigate_next),
+                flex: 25,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      border:
+                          Border(bottom: BorderSide(color: Colors.black12))),
+                  child: ListTile(
+                    leading: Icon(Icons.monetization_on_outlined),
+                    title: Text('SGCoins',
+                        style: TextStyle(
+                            fontSize: 11.sp, fontWeight: FontWeight.bold)),
+                    trailing: Icon(Icons.navigate_next, color: Colors.grey),
+                  ),
                 ),
               ),
-              Divider(
-                color: Colors.black12,
-                thickness: 0.5,
-              ),
               Expanded(
-                child: ListTile(
-                  leading: Icon(Icons.calendar_month_outlined),
-                  title: Text('Calendar'),
-                  trailing: Icon(Icons.navigate_next),
+                flex: 25,
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      border:
+                          Border(bottom: BorderSide(color: Colors.black12))),
+                  child: ListTile(
+                    onTap: () {
+                    Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => (CalendarPage0())),
+                        );
+                    },
+                    leading: Icon(Icons.calendar_month_outlined),
+                    title: Text('Calendar',
+                        style: TextStyle(
+                            fontSize: 11.sp, fontWeight: FontWeight.bold)),
+                    trailing: Icon(Icons.navigate_next, color: Colors.grey),
+                  ),
                 ),
               ),
-              Divider(
-                color: Colors.black12,
-                thickness: 0.5,
-              ),
               Expanded(
-                child: ListTile(
-                  leading: Icon(Icons.subscriptions_outlined),
-                  title: Text('Subscription'),
-                  trailing: Icon(Icons.navigate_next),
+                flex: 25,
+                child: Container(
+                  alignment: Alignment.center,
+                  child: ListTile(
+                    leading: Icon(Icons.subscriptions_outlined),
+                    title: Text('Subscription',
+                        style: TextStyle(
+                            fontSize: 11.sp, fontWeight: FontWeight.bold)),
+                    trailing: Icon(Icons.navigate_next, color: Colors.grey),
+                  ),
                 ),
               ),
             ],
@@ -67,4 +98,3 @@ class ProfilePageSliverContent2 extends StatelessWidget {
     );
   }
 }
-

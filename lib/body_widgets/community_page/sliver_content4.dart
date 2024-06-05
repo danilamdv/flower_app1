@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CommunityCardSliverContent4 extends StatelessWidget {
   const CommunityCardSliverContent4({
@@ -23,80 +24,77 @@ class CommunityCardSliverContent4 extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Container(
-                            child: CircleAvatar(
-                              radius: 27,
-                              backgroundImage: AssetImage(
-                                "assets/profilphoto.jpg",
-                              ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding:  EdgeInsets.only(left: 10.r),
+                        child: Container(
+                          child: CircleAvatar(
+                            radius: 25.r,
+                            backgroundImage: AssetImage(
+                              "assets/profilphoto.jpg",
                             ),
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Sarah",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15),
-                              ),
-                              Text(
-                                "June 11",
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ],
-                          ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Sarah",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13.sp),
+                            ),
+                            Text(
+                              "June 11",
+                              style: TextStyle(fontSize: 8.sp),
+                            ),
+                          ],
                         ),
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                "post",
-                                style: TextStyle(fontSize: 11),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "post",
+                              style: TextStyle(fontSize: 9.sp),
+                            ),
+                            SizedBox(
+                              width: 8.w,
+                            ),
+                            Padding(
+                              padding:
+                                   EdgeInsets.only(right: 10.r),
+                              child: Icon(
+                                CupertinoIcons.photo_on_rectangle,
+                                size: 22.r,
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 10),
-                                child: Icon(
-                                  CupertinoIcons.photo_on_rectangle,
-                                  size: 22,
-                                ),
-                              )
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
             Expanded(
               flex: 9,
               child: Padding(
-                padding: const EdgeInsets.only(left: 15 , right: 15),
+                padding:  EdgeInsets.only(left: 15.r , right: 15.r),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -115,42 +113,45 @@ class CommunityCardSliverContent4 extends StatelessWidget {
               flex: 2,
               child: Container(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 20 , top: 10 , ),
+                  padding:  EdgeInsets.only(left: 20.r , top: 10.r , right: 16.r ),
                   child: Text(
-                      "I needs Plant well i want to make the world is beaituful , can you help me ?"),
+                      "I needs Plant well i want to make the world is beaituful , can you help me ?" , style:  TextStyle( fontSize: 10.sp ),),
                 ),
               ),
             ),
             Expanded(
               flex: 2,
               child: Container(
-                child: Row(
-                  children: [
-                    TextButton.icon(
-                        label: Text(
-                          "43",
-                          style: TextStyle(
-                              fontSize: 11, color: Colors.black),
-                        ),
-                        onPressed: () {},
-                        icon: Icon(
-                          color: Colors.black,
-                          CupertinoIcons.hand_thumbsup_fill,
-                          size: 23,
-                        )),
-                    TextButton.icon(
-                        label: Text(
-                          "Reply",
-                          style: TextStyle(
-                              color: Colors.black, fontSize: 13),
-                        ),
-                        onPressed: () {},
-                        icon: Icon(
-                          color: Colors.black,
-                          CupertinoIcons.arrow_turn_up_left,
-                          size: 22,
-                        )),
-                  ],
+                child: Padding(
+                  padding:  EdgeInsets.only(left: 5.r),
+                  child: Row(
+                    children: [
+                      TextButton.icon(
+                          label: Text(
+                            "43",
+                            style: TextStyle(
+                                fontSize: 9.sp, color: Colors.black),
+                          ),
+                          onPressed: () {},
+                          icon: Icon(
+                            color: Colors.black,
+                            CupertinoIcons.hand_thumbsup_fill,
+                            size: 22.r,
+                          )),
+                      TextButton.icon(
+                          label: Text(
+                            "Reply",
+                            style: TextStyle(
+                                color: Colors.black, fontSize: 11.sp),
+                          ),
+                          onPressed: () {},
+                          icon: Icon(
+                            color: Colors.black,
+                            CupertinoIcons.arrow_turn_up_left,
+                            size: 22.r,
+                          )),
+                    ],
+                  ),
                 ),
               ),
             ),

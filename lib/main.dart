@@ -7,6 +7,7 @@ import 'package:flower_app/body_widgets/home_screen_page/homescreen_page0.dart';
 import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
 import 'package:flower_app/bottomnavigatonbar/custom_bottom_navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main(List<String> args) {
   runApp(MyApp());
@@ -28,6 +29,7 @@ class _MyAppState extends State<MyApp> {
   late CommunityCard communityCard2;
   late CatologPage catologPage4;
   late MyCartPage myCardPage3;
+
   @override
   void initState() {
     homescreen1 = HomeScreenPage(pageController: PageController());
@@ -54,15 +56,20 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: _currentIndex == 0 ? CustomAppBar() : null,
-          body: AllPages[_currentIndex],
-          bottomNavigationBar: CustomBottomNavBar(
-            currentIndex: _currentIndex,
-            onTap: _onNavBarTapped,
-          ),
-        ));
+     return ScreenUtilInit(
+  designSize: Size(360, 690), 
+  builder: (context, _) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: Scaffold(
+      appBar: _currentIndex == 0 ? CustomAppBar() : null,
+      body: AllPages[_currentIndex],
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: _onNavBarTapped,
+      ),
+    ),
+  ),
+);
+ 
   }
 }

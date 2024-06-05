@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfilePageAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
@@ -7,52 +8,16 @@ class ProfilePageAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      toolbarHeight: 70,
-      titleSpacing: 21,
+      backgroundColor:      Colors.black12,
+      toolbarHeight: 70.h,
+      titleSpacing: 21.w,
       title: Text(
         "Profile",
         style: TextStyle(
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.bold, fontSize: 20.sp
         ),
       ),
-      actions: [
-        Container(
-          height: 35,
-          width: 35,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-                color: const Color.fromARGB(255, 234, 237, 236),
-                width: 2), 
-          ),
-          child: Icon(
-            Icons.search,
-            color: Colors.black,
-            size: 24, 
-          ),
-        ),
-        SizedBox(
-          width: 19,
-        ),
-        Container(
-          height: 35,
-          width: 35,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-                color: const Color.fromARGB(255, 234, 237, 236),
-                width: 2), 
-          ),
-          child: Icon(
-            Icons.favorite_border,
-            color: Colors.black,
-            size: 24, 
-          ),
-        ),
-        SizedBox(
-          width: 19,
-        ),
-      ],
+      
     );
   }
 }
