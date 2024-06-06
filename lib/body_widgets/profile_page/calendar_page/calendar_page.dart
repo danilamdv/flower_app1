@@ -44,7 +44,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(11.0.r),
+                  padding: EdgeInsets.all(15.0.r),
                   child: Container(
                     height: 85.h,
                     child: ListView(
@@ -249,7 +249,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(
-                      left: 15.r, right: 15.r, top: 20.h, bottom: 20.h),
+                      left: 17.r,  top: 20.h, bottom: 20.h),
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
