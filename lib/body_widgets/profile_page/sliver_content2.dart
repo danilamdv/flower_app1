@@ -11,15 +11,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ProfilePageSliverContent2 extends StatelessWidget {
   const ProfilePageSliverContent2({
     super.key,
-    required this.screenWidth,
-    required this.screenHeight,
+  
   });
 
-  final double screenWidth;
-  final double screenHeight;
+
 
   @override
   Widget build(BuildContext context) {
+        double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return SliverToBoxAdapter(
       child: Container(
           width: screenWidth * 1,

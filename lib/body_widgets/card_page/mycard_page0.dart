@@ -1,4 +1,4 @@
-import 'package:flower_app/payment_widget/payment_page.dart';
+import 'package:flower_app/body_widgets/payment_widget/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

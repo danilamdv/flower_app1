@@ -1,5 +1,6 @@
 import 'package:flower_app/body_widgets/product_page/product_page0.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MarketPage extends StatefulWidget {
   const MarketPage({super.key});
@@ -36,7 +37,7 @@ class _MarketPageState extends State<MarketPage>
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(screenHeight * 0.14),
             child: Padding(
-              padding: const EdgeInsets.only(left: 15, right: 15),
+              padding: EdgeInsets.only(left: 15.r, right: 15.r),
               child: Column(
                 children: [
                   Container(
@@ -49,14 +50,19 @@ class _MarketPageState extends State<MarketPage>
                     child: Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Icon(Icons.search, color: Colors.grey),
+                          padding: EdgeInsets.only(left: 10.r),
+                          child: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                            size: 20.r,
+                          ),
                         ),
-                        SizedBox(width: 10),
+                        SizedBox(width: 10.w),
                         Expanded(
                           child: TextField(
                             decoration: InputDecoration(
-                              hintText: 'Search a question...',
+                              labelText: 'Search a question...',
+                              labelStyle: TextStyle(fontSize: 9.sp),
                               border: InputBorder.none,
                             ),
                           ),
@@ -65,7 +71,7 @@ class _MarketPageState extends State<MarketPage>
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 5),
+                    padding: EdgeInsets.only(top: 5.h),
                     child: TabBar(
                       controller: _tabController,
                       tabs: [
@@ -89,14 +95,14 @@ class _MarketPageState extends State<MarketPage>
                   child: Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15, top: 10, bottom: 10),
+                        padding: EdgeInsets.only(
+                            left: 15.r, top: 10.h, bottom: 10.h),
                         child: Icon(Icons.filter_list, color: Colors.black),
                       ),
                       ...List.generate(10, (index) {
                         return Padding(
-                          padding: const EdgeInsets.only(
-                              left: 5, right: 5, top: 15, bottom: 10),
+                          padding: EdgeInsets.only(
+                              left: 5.r, right: 5.r, top: 15.h, bottom: 10.h),
                           child: Container(
                             height: screenHeight * 0.04,
                             width: screenWidth * 0.35,
@@ -105,10 +111,11 @@ class _MarketPageState extends State<MarketPage>
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text('Option ${index + 1}',
-                                    style: TextStyle(color: Colors.black)),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10.sp)),
                                 Icon(Icons.keyboard_arrow_down,
                                     color: Colors.black),
                               ],
@@ -124,21 +131,21 @@ class _MarketPageState extends State<MarketPage>
                     itemCount: 10,
                     itemBuilder: (BuildContext context, int index) {
                       return SizedBox(
-                        height: screenHeight * 0.105,
+                        height: screenHeight * 0.110,
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 12, right: 12, bottom: 8),
+                          padding: EdgeInsets.only(
+                              left: 12.r, right: 12.r, bottom: 8.h),
                           child: Card(
                             child: Padding(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(10.r),
                               child: Row(
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
                                         AssetImage("assets/flower1.jpg"),
-                                    radius: 23,
+                                    radius: 23.r,
                                   ),
-                                  SizedBox(width: 10),
+                                  SizedBox(width: 10.w),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
@@ -149,19 +156,22 @@ class _MarketPageState extends State<MarketPage>
                                           Text(
                                             'Flower Club',
                                             style: TextStyle(
-                                                fontSize: 15,
+                                                fontSize: 10.sp,
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          SizedBox(width: 5),
+                                          SizedBox(width: 5.w),
                                           Icon(Icons.star,
-                                              color: Colors.green, size: 16),
+                                              color: Colors.green, size: 15.sp),
                                           Text('5.0',
                                               style: TextStyle(
-                                                  color: Colors.green)),
+                                                  color: Colors.green,
+                                                  fontSize: 9.sp)),
                                         ],
                                       ),
                                       Text('55 reviews',
-                                          style: TextStyle(color: Colors.grey)),
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 9.sp)),
                                     ],
                                   ),
                                   Spacer(),
@@ -170,10 +180,10 @@ class _MarketPageState extends State<MarketPage>
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text('50 euro',
-                                          style: TextStyle(fontSize: 14)),
+                                          style: TextStyle(fontSize: 10.sp)),
                                       Text('3% bonus',
                                           style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 9.sp,
                                               color: Colors.grey)),
                                     ],
                                   ),
@@ -195,14 +205,14 @@ class _MarketPageState extends State<MarketPage>
                   child: Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(
-                            left: 15, top: 10, bottom: 10),
+                        padding: EdgeInsets.only(
+                            left: 15.r, top: 10.h, bottom: 10.h),
                         child: Icon(Icons.filter_list, color: Colors.black),
                       ),
                       ...List.generate(10, (index) {
                         return Padding(
-                          padding: const EdgeInsets.only(
-                              left: 5, right: 5, top: 15, bottom: 10),
+                          padding: EdgeInsets.only(
+                              left: 5.r, right: 5.r, top: 15.h, bottom: 10.h),
                           child: Container(
                             height: screenHeight * 0.04,
                             width: screenWidth * 0.35,
@@ -211,10 +221,11 @@ class _MarketPageState extends State<MarketPage>
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text('Option ${index + 1}',
-                                    style: TextStyle(color: Colors.black)),
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 10.sp)),
                                 Icon(Icons.keyboard_arrow_down,
                                     color: Colors.black),
                               ],
@@ -254,23 +265,23 @@ class _MarketPageState extends State<MarketPage>
                                             children: [
                                               Image.asset("assets/flower1.jpg"),
                                               Positioned(
-                                                left: 155,
-                                                top: 5,
+                                                right: 5.r,
+                                                top: 6.h,
                                                 child: CircleAvatar(
                                                   backgroundColor: Colors.black
                                                       .withOpacity(0.6),
-                                                  radius: 15,
+                                                  radius: 15.r,
                                                   child: Stack(children: [
                                                     Positioned(
-                                                      top: -8,
-                                                      left: -9,
+                                                      top: -8.h,
+                                                      left: -9.r,
                                                       child: IconButton(
                                                         icon: Icon(
                                                           Icons.favorite_border,
                                                           color: Colors.white,
                                                         ),
                                                         onPressed: () {},
-                                                        iconSize: 22,
+                                                        iconSize: 22.r,
                                                         color:
                                                             Colors.transparent,
                                                       ),
@@ -286,8 +297,8 @@ class _MarketPageState extends State<MarketPage>
                                         child: Stack(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10, bottom: 10),
+                                              padding: EdgeInsets.only(
+                                                  left: 10.r, bottom: 10.h),
                                               child: Container(
                                                 alignment: Alignment.topLeft,
                                                 child: Column(
@@ -301,7 +312,7 @@ class _MarketPageState extends State<MarketPage>
                                                         textAlign:
                                                             TextAlign.left,
                                                         style: TextStyle(
-                                                            fontSize: 13,
+                                                            fontSize: 10.sp,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500)),
@@ -309,14 +320,14 @@ class _MarketPageState extends State<MarketPage>
                                                         textAlign:
                                                             TextAlign.left,
                                                         style: TextStyle(
-                                                            fontSize: 13,
+                                                            fontSize: 10.sp,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .w500)),
                                                     Text(
                                                       "125 euro",
                                                       style: TextStyle(
-                                                          fontSize: 15,
+                                                          fontSize: 10.sp,
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
@@ -325,25 +336,28 @@ class _MarketPageState extends State<MarketPage>
                                               ),
                                             ),
                                             Positioned(
-                                              bottom: 10,
-                                              right: 15,
+                                              bottom: 8.h,
+                                              right: 8.r,
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                     color: Colors.pink[400],
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5)),
-                                                width: 30,
-                                                height: 32,
+                                                width: 26.w,
+                                                height: 28.h,
                                               ),
                                             ),
                                             Positioned(
-                                              right: 5,
-                                              bottom: 1,
+                                              right: -4.r,
+                                              bottom: -1.h,
                                               child: IconButton(
                                                   onPressed: () {},
-                                                  icon: Icon(Icons
-                                                      .shopping_cart_outlined)),
+                                                  icon: Icon(
+                                                    Icons
+                                                        .shopping_cart_outlined,
+                                                    size: 19.r,
+                                                  )),
                                             ),
                                           ],
                                         )),

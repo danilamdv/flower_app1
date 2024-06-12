@@ -1,4 +1,3 @@
-import 'package:flower_app/body_widgets/profile_page/calendar_page/calendar_page2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -17,6 +16,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black12,
@@ -53,19 +53,19 @@ class _CalendarPage0State extends State<CalendarPage0> {
                         Padding(
                           padding: EdgeInsets.only(right: 10.r),
                           child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CalendarPage1(
-                                    onDaySelected: (day) {
-                                      setState(() {
-                                        selectedDay = day;
-                                      });
-                                    },
-                                  ),
-                                ),
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: selectedDay,
+                                firstDate: DateTime(2020),
+                                lastDate: DateTime(2030),
                               );
+                              if (pickedDate != null &&
+                                  pickedDate != selectedDay) {
+                                setState(() {
+                                  selectedDay = pickedDate;
+                                });
+                              }
                             },
                             child: Container(
                               width: 103.0.w,
@@ -248,8 +248,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                      left: 17.r,  top: 20.h, bottom: 20.h),
+                  padding: EdgeInsets.only(left: 17.r, top: 20.h, bottom: 20.h),
                   child: Container(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -274,7 +273,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
                         Expanded(
                           flex: 25,
                           child: Padding(
-                            padding:  EdgeInsets.all(3.0.r),
+                            padding: EdgeInsets.all(3.0.r),
                             child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.red,
@@ -305,7 +304,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
                         Expanded(
                           flex: 50,
                           child: Padding(
-                            padding:  EdgeInsets.all(5.0.r),
+                            padding: EdgeInsets.all(5.0.r),
                             child: Container(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -333,7 +332,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
                         Expanded(
                           flex: 25,
                           child: Padding(
-                            padding:  EdgeInsets.all(5.0.r),
+                            padding: EdgeInsets.all(5.0.r),
                             child: Container(
                               child: ElevatedButton(
                                 onPressed: () {},
@@ -356,7 +355,7 @@ class _CalendarPage0State extends State<CalendarPage0> {
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ],

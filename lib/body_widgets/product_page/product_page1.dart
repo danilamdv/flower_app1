@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class PageViewIndicatorWidget extends StatelessWidget {
@@ -12,7 +13,7 @@ class PageViewIndicatorWidget extends StatelessWidget {
       child: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding:  EdgeInsets.all(15.0.r),
             child: PageView(
               controller: controller,
               children: [

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TitleAndSalesInfoWidget extends StatelessWidget {
-    final int counter;
+  final int counter;
   final VoidCallback incrementCounter;
   final VoidCallback decrementCounter;
 
@@ -15,7 +16,7 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: EdgeInsets.all(15.0.r),
         child: Container(
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
@@ -37,17 +38,18 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                         child: Column(
                           children: [
                             Expanded(
-                              flex: 4,
+                              flex: 5,
                               child: Container(
                                 alignment: Alignment.centerLeft,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 22, top: 10),
+                                  padding:
+                                      EdgeInsets.only(left: 22.r, top: 10.h),
                                   child: Text(
                                     "Rubber Fig Plant",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
-                                      fontSize: 23,
+                                      fontSize: 12.sp,
                                     ),
                                   ),
                                 ),
@@ -61,19 +63,22 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                                     Expanded(
                                       flex: 2,
                                       child: Padding(
-                                        padding: const EdgeInsets.only(left: 20),
+                                        padding: EdgeInsets.only(left: 22.r),
                                         child: Container(
-                                          height: 20,
+                                          height: 20.h,
                                           alignment: Alignment.center,
                                           decoration: BoxDecoration(
-                                            color: Color.fromARGB(255, 15, 39, 33),
-                                            borderRadius: BorderRadius.circular(5),
+                                            color:
+                                                Color.fromARGB(255, 15, 39, 33),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                           ),
                                           child: Text(
                                             "776 sold",
                                             style: TextStyle(
-                                              fontSize: 10,
-                                              color: Color.fromARGB(255, 0, 118, 61),
+                                              fontSize: 8.sp,
+                                              color: Color.fromARGB(
+                                                  255, 0, 118, 61),
                                             ),
                                           ),
                                         ),
@@ -87,14 +92,15 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                                           onPressed: () {},
                                           icon: Icon(
                                             Icons.star_half_rounded,
-                                            color: Color.fromARGB(255, 0, 118, 61),
-                                            size: 15,
+                                            color:
+                                                Color.fromARGB(255, 0, 118, 61),
+                                            size: 15.r,
                                           ),
                                           label: Text(
                                             "4.6 (7000 reviews)",
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 9,
+                                              fontSize: 8.sp,
                                             ),
                                           ),
                                         ),
@@ -111,7 +117,7 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                     Expanded(
                       flex: 1,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.only(top: 15.r),
                         child: Container(
                           alignment: Alignment.topCenter,
                           child: IconButton(
@@ -128,10 +134,10 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(right: 20, left: 20, bottom: 10),
+                padding: EdgeInsets.only(right: 22.r, left: 22.r, bottom: 10.h),
                 child: Container(
                   color: Colors.grey,
-                  height: 1,
+                  height: 1.h,
                 ),
               ),
               Expanded(
@@ -144,13 +150,15 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                         child: Container(
                           alignment: Alignment.topLeft,
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 20, top: 10),
+                            padding: EdgeInsets.only(
+                              left: 22.r,
+                            ),
                             child: Text(
                               "Description",
                               style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10.sp),
                             ),
                           ),
                         ),
@@ -159,13 +167,14 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                         flex: 4,
                         child: Container(
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+                            padding: EdgeInsets.only(
+                                top: 10.h, left: 22.r, right: 22.r),
                             child: Text(
                               " It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing dnlsfnslnfskfnklsfnsnl",
                               style: TextStyle(
                                 fontWeight: FontWeight.w300,
                                 color: Colors.white,
-                                fontSize: 11,
+                                fontSize: 8.sp,
                               ),
                             ),
                           ),
@@ -177,16 +186,18 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                           child: Row(
                             children: [
                               Expanded(
-                                flex: 2,
+                                flex: 3,
                                 child: Container(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 20, bottom: 20),
+                                    padding: EdgeInsets.only(
+                                      left: 22.r,
+                                    ),
                                     child: Text(
                                       "Quantity",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 13,
+                                        fontSize: 10.sp,
                                       ),
                                     ),
                                   ),
@@ -194,77 +205,76 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                               ),
                               Expanded(
                                 flex: 7,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 20),
-                                  child: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 35,
-          width: 40,
-          child: ElevatedButton(
-            onPressed: decrementCounter,
-            child: Text(
-              '-',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.transparent,
-              backgroundColor: Color.fromARGB(255, 53, 56, 63),
-              padding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  topLeft: Radius.circular(20),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Container(
-          color: Color.fromARGB(255, 53, 56, 63),
-          height: 35,
-          width: 20,
-          alignment: Alignment.center,
-          child: Text(
-            '$counter',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              fontSize: 20,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 35,
-          width: 40,
-          child: ElevatedButton(
-            onPressed: incrementCounter,
-            child: Text(
-              '+',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.transparent,
-              backgroundColor: Color.fromARGB(255, 53, 56, 63),
-              padding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 25.h,
+                                      width: 30.w,
+                                      child: ElevatedButton(
+                                        onPressed: decrementCounter,
+                                        child: Text(
+                                          '-',
+                                          style: TextStyle(
+                                            fontSize: 13.sp,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          foregroundColor: Colors.transparent,
+                                          backgroundColor:
+                                              Color.fromARGB(255, 53, 56, 63),
+                                          padding: EdgeInsets.zero,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(20),
+                                              topLeft: Radius.circular(20),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      color: Color.fromARGB(255, 53, 56, 63),
+                                      height: 25.h,
+                                      width: 30.w,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '$counter',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          fontSize: 13.sp,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 25.h,
+                                      width: 30.w,
+                                      child: ElevatedButton(
+                                        onPressed: incrementCounter,
+                                        child: Text(
+                                          '+',
+                                          style: TextStyle(
+                                            fontSize: 13.sp,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          foregroundColor: Colors.transparent,
+                                          backgroundColor:
+                                              Color.fromARGB(255, 53, 56, 63),
+                                          padding: EdgeInsets.zero,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                              bottomRight: Radius.circular(20),
+                                              topRight: Radius.circular(20),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -276,10 +286,10 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
+                padding: EdgeInsets.only(left: 22.r, right: 22.r),
                 child: Container(
                   color: Colors.grey,
-                  height: 1,
+                  height: 1.h,
                 ),
               ),
               Expanded(
@@ -293,21 +303,26 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                "Total price",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10,
-                                  color: Colors.white,
+                              Padding(
+                                padding: EdgeInsets.only(left: 22.r),
+                                child: Text(
+                                  "Total price",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 9.sp,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 10, top: 5),
+                                padding: EdgeInsets.only(
+                                    bottom: 5, top: 5, left: 22.r),
                                 child: Text(
                                   "\$72",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
+                                    fontSize: 10.sp,
                                   ),
                                 ),
                               )
@@ -319,14 +334,15 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                         flex: 8,
                         child: Container(
                           child: Padding(
-                            padding: const EdgeInsets.only(right: 15, bottom: 10),
+                            padding: EdgeInsets.only(right: 22.r, left: 10.r),
                             child: ElevatedButton.icon(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Color.fromARGB(255, 0, 118, 61),
+                                backgroundColor:
+                                    Color.fromARGB(255, 0, 118, 61),
                               ),
                               icon: Icon(
-                                size: 17,
+                                size: 17.r,
                                 Icons.shopping_bag,
                                 color: Colors.white,
                               ),
@@ -335,7 +351,7 @@ class TitleAndSalesInfoWidget extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
-                                  fontSize: 13,
+                                  fontSize: 10.sp,
                                 ),
                               ),
                             ),

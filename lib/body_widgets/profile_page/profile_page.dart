@@ -12,8 +12,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
         appBar: ProfilePageAppbar(),
         body: Container(
@@ -21,19 +20,19 @@ class ProfilePage extends StatelessWidget {
           color: Colors.black12,
           child: CustomScrollView(
             slivers: [
-              ProfilePageSlivercontent1(screenWidth: screenWidth, screenHeight: screenHeight),
+              ProfilePageSlivercontent1(),
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 15.h,
                 ),
               ),
-              ProfilePageSliverContent2(screenWidth: screenWidth, screenHeight: screenHeight),
+              ProfilePageSliverContent2(),
               SliverToBoxAdapter(
                 child: SizedBox(
                   height: 15.h,
                 ),
               ),
-              ProfilePageSliverContent3(screenWidth: screenWidth, screenHeight: screenHeight),
+              ProfilePageSliverContent3(),
             ],
           ),
         ));

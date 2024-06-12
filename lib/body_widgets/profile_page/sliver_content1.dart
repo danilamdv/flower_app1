@@ -1,18 +1,18 @@
+import 'package:flower_app/body_widgets/profile_page/fill_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfilePageSlivercontent1 extends StatelessWidget {
   const ProfilePageSlivercontent1({
     super.key,
-    required this.screenWidth,
-    required this.screenHeight,
-  });
 
-  final double screenWidth;
-  final double screenHeight;
+  });
 
   @override
   Widget build(BuildContext context) {
+        double screenWidth = MediaQuery.of(context).size.width;
+    // ignore: unused_local_variable
+    double screenHeight = MediaQuery.of(context).size.height;
     return SliverToBoxAdapter(
       child: Container(
           width: screenWidth * 1,
@@ -28,7 +28,13 @@ class ProfilePageSlivercontent1 extends StatelessWidget {
                       border:
                           Border(bottom: BorderSide(color: Colors.black12))),
                   child: ListTile(
-                    // titleAlignment:ListTileTitleAlignment.center ,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FillProfileScreen(),
+                          ));
+                    },
                     leading: CircleAvatar(
                       backgroundImage: AssetImage("assets/flower1.jpg"),
                       radius: 22.r,

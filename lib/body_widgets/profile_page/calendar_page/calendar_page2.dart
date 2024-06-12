@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class CalendarPage1 extends StatefulWidget {
   final Function(DateTime) onDaySelected;
@@ -12,7 +11,6 @@ class CalendarPage1 extends StatefulWidget {
 
 class _CalendarPage1State extends State<CalendarPage1> {
   DateTime _selectedDay = DateTime.now();
-  CalendarFormat _calendarFormat = CalendarFormat.month;
 
   @override
   Widget build(BuildContext context) {
@@ -20,30 +18,28 @@ class _CalendarPage1State extends State<CalendarPage1> {
       appBar: AppBar(
         title: Text('Takvim'),
       ),
-      body: Column(
-        children: [
-          TableCalendar(
-            firstDay: DateTime.utc(2020, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
-            focusedDay: _selectedDay,
-            calendarFormat: _calendarFormat,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onDaySelected: (selectedDay, focusedDay) {
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: _selectedDay,
+              firstDate: DateTime(2020),
+              lastDate: DateTime(2030),
+            );
+            if (pickedDate != null && pickedDate != _selectedDay) {
               setState(() {
-                _selectedDay = selectedDay;
+                _selectedDay = pickedDate;
               });
-              widget.onDaySelected(selectedDay);
+              widget.onDaySelected(pickedDate);
               Navigator.pop(context);
-            },
-            onFormatChanged: (format) {
-               setState(() {
-                _calendarFormat = format;
-              });
-            },
+            }
+          },
+          child: Text(
+            'Tarih Seçin',
+            style: TextStyle(fontSize: 18),
           ),
-        ],
+        ),
       ),
     );
   }
