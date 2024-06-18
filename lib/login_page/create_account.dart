@@ -1,6 +1,7 @@
 import 'package:auth_buttons/auth_buttons.dart';
-import 'package:flower_app/login_page/create_pin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flower_app/login_page/login_screen1.dart';
+import 'package:flower_app/services/firebase_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,6 +17,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   Color _emailIconColor = Colors.grey;
   Color _passwordIconColor = Colors.grey;
   bool _isChecked = false;
+  final FirebaseAuthService _authService = FirebaseAuthService();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -23,17 +25,35 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     });
   }
 
-  void _login() {
+  void _createAccount() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    print('Email: $email, Password: $password');
-
-    Navigator.push(
+    User? user = await _authService.createAccount(email, password);
+    if (user != null) {
+      Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PinCodeVerificationScreen(),
-        ));
+          builder: (context) => LoginScreen(),
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Account Creation Failed'),
+          content: Text('Failed to create account. Please try again later.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -177,10 +197,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         Theme(
                           data: Theme.of(context).copyWith(
                             checkboxTheme: CheckboxThemeData(
-                              fillColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.selected)) {
+                              fillColor: WidgetStateProperty.resolveWith<Color>(
+                                  (Set<WidgetState> states) {
+                                if (states.contains(WidgetState.selected)) {
                                   return Colors.green;
                                 }
                                 return Colors.white;
@@ -210,7 +229,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   width: screenWidth,
                   height: 50.h,
                   child: ElevatedButton(
-                    onPressed: _login,
+                    onPressed: _createAccount,
                     child: Text(
                       'Sign up',
                       style: TextStyle(fontSize: 10.sp),
@@ -221,7 +240,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     ),
                   ),
                 ),
-              
+                SizedBox(height: 20),
                 Container(
                   width: screenWidth,
                   height: 120.h,

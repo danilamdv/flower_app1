@@ -1,6 +1,9 @@
 import 'package:auth_buttons/auth_buttons.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flower_app/body_widgets/profile_page/fill_profile_screen.dart';
 import 'package:flower_app/login_page/create_account.dart';
 import 'package:flower_app/login_page/forgot_password.dart';
+import 'package:flower_app/services/firebase_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Color _emailIconColor = Colors.grey;
   Color _passwordIconColor = Colors.grey;
   bool _isChecked = false;
+  final FirebaseAuthService _authService = FirebaseAuthService();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -23,11 +27,38 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void _login() {
+  void _login() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    print('Email: $email, Password: $password');
+    User? user = await _authService.signIn(email, password);
+
+    if (user != null) {
+      // Giriş başarılı, profil ekranına yönlendir
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FillProfileScreen(),
+        ),
+      );
+    } else {
+      // Giriş başarısız
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Login Failed'),
+          content: Text('Invalid email or password. Please try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -237,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 70.h,
                   child: Center(
                     child: Text(
-                      "or contunie with",
+                      "or continue with",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 10.sp,

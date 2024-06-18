@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
+import 'package:flower_app/utils/next_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -347,8 +349,10 @@ Future<dynamic> completed(context) {
                         TextStyle(fontSize: 9.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 20.h),
-                  // Dönen yükleniyor simgesi
-                  CircularProgressIndicator(),
+                  ElevatedButton(
+                      onPressed: () =>
+                          nextScreenReplace(context, ProfilePage()),
+                      child: Text("next"))
                 ],
               ),
             ),
