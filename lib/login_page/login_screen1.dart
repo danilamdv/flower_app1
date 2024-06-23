@@ -2,10 +2,13 @@ import 'package:auth_buttons/auth_buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flower_app/body_widgets/profile_page/fill_profile_screen.dart';
 import 'package:flower_app/login_page/create_account.dart';
-import 'package:flower_app/login_page/forgot_password.dart';
+import 'package:flower_app/login_page/forgot_password1.dart';
 import 'package:flower_app/services/firebase_auth_services.dart';
+import 'package:flower_app/services/iternet_provider.dart';
+import 'package:flower_app/utils/next_screen.dart';
+import 'package:flower_app/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -35,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (user != null) {
       // Giriş başarılı, profil ekranına yönlendir
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => FillProfileScreen(),
@@ -61,6 +64,108 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> handleFacebookAuth() async {
+    final sp = context.read<FirebaseAuthService>();
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      openSnackbar(context, "Check your Internet connection", Colors.red);
+    } else {
+      await sp.signInWithFacebook().then((value) {
+        if (sp.hasError == true) {
+          openSnackbar(context, sp.errorCode.toString(), Colors.red);
+        } else {
+          sp.checkUserExists().then((value) async {
+            if (value == true) {
+              await sp.getUserDataFromFirestore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            } else {
+              sp.saveDataToFirestore().then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> handleTwitterAuth() async {
+    final sp = context.read<FirebaseAuthService>();
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      openSnackbar(context, "Check your Internet connection", Colors.red);
+    } else {
+      await sp.signInWithTwitter().then((value) {
+        if (sp.hasError == true) {
+          openSnackbar(context, sp.errorCode.toString(), Colors.red);
+        } else {
+          sp.checkUserExists().then((value) async {
+            if (value == true) {
+              await sp.getUserDataFromFirestore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            } else {
+              sp.saveDataToFirestore().then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> handleGoogleSignIn() async {
+    final sp = context.read<FirebaseAuthService>();
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      openSnackbar(context, "Check your Internet connection", Colors.red);
+    } else {
+      await sp.signInWithGoogle().then((value) {
+        if (sp.hasError == true) {
+          openSnackbar(context, sp.errorCode.toString(), Colors.red);
+        } else {
+          sp.checkUserExists().then((value) async {
+            if (value == true) {
+              await sp.getUserDataFromFirestore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            } else {
+              sp.saveDataToFirestore().then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  void handleAfterSignIn() {
+    Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+      nextScreenReplace(context, FillProfileScreen());
+    });
+  }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -78,34 +183,34 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(16.0.r),
+          padding: EdgeInsets.all(16.0),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(bottom: 10.h),
+                  padding: EdgeInsets.only(bottom: 10.0),
                   child: Container(
                     width: screenWidth,
-                    height: 40.h,
+                    height: 40.0,
                     child: Image.asset("assets/leafphoto.png"),
                   ),
                 ),
                 Container(
                   width: screenWidth,
-                  height: 100.h,
+                  height: 100.0,
                   child: Center(
                     child: Text(
                       "Login to Your Account",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 12.sp,
+                        fontSize: 12.0,
                       ),
                     ),
                   ),
                 ),
                 Container(
-                  height: 50.h,
+                  height: 50.0,
                   child: Focus(
                     onFocusChange: (hasFocus) {
                       setState(() {
@@ -115,35 +220,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextField(
                       cursorHeight: 0,
                       style: TextStyle(
-                        fontSize: 10.sp,
+                        fontSize: 10.0,
                       ),
                       controller: _emailController,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(vertical: 10.0),
                         border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(15)),
+                            borderRadius: BorderRadius.circular(15.0)),
                         filled: true,
                         fillColor: Colors.grey[200],
                         labelText: 'Email',
-                        labelStyle: TextStyle(fontSize: 10.sp),
+                        labelStyle: TextStyle(fontSize: 10.0),
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         focusedBorder: OutlineInputBorder(
                             borderSide:
-                                BorderSide(color: _emailIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
+                                BorderSide(color: _emailIconColor, width: 2.0),
+                            borderRadius: BorderRadius.circular(15.0)),
                         prefixIcon: Icon(
                           Icons.email,
                           color: _emailIconColor,
-                          size: 20.r,
+                          size: 20.0,
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 10.0),
                 Container(
-                  height: 50.h,
+                  height: 50.0,
                   child: Focus(
                     onFocusChange: (hasFocus) {
                       setState(() {
@@ -154,34 +259,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: TextField(
                       cursorHeight: 0,
                       style: TextStyle(
-                        fontSize: 10.sp,
+                        fontSize: 10.0,
                       ),
                       controller: _passwordController,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(vertical: 10.0),
                         border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: _emailIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
+                            borderSide: BorderSide(
+                                color: _passwordIconColor, width: 2.0),
+                            borderRadius: BorderRadius.circular(15.0)),
                         filled: true,
                         fillColor: Colors.grey[200],
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: _passwordIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
+                            borderSide: BorderSide(
+                                color: _passwordIconColor, width: 2.0),
+                            borderRadius: BorderRadius.circular(15.0)),
                         labelText: 'Password',
-                        labelStyle: TextStyle(fontSize: 10.sp),
-                        prefixIcon: Icon(Icons.lock,
-                            color: _passwordIconColor, size: 20.r),
+                        labelStyle: TextStyle(fontSize: 10.0),
+                        prefixIcon: Icon(
+                          Icons.lock,
+                          color: _passwordIconColor,
+                          size: 20.0,
+                        ),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            size: 20.r,
                             _obscureText
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                             color: _passwordIconColor,
+                            size: 20.0,
                           ),
                           onPressed: _togglePasswordVisibility,
                         ),
@@ -189,12 +297,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: 20.0),
                 Container(
                   width: screenWidth,
-                  height: 20.h,
+                  height: 20.0,
                   child: Padding(
-                    padding: EdgeInsets.only(right: 25.r),
+                    padding: EdgeInsets.only(right: 25.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -202,10 +310,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         Theme(
                           data: Theme.of(context).copyWith(
                             checkboxTheme: CheckboxThemeData(
-                              fillColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.selected)) {
+                              fillColor: WidgetStateProperty.resolveWith<Color>(
+                                  (Set<WidgetState> states) {
+                                if (states.contains(WidgetState.selected)) {
                                   return Colors.green;
                                 }
                                 return Colors.white;
@@ -224,21 +331,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           'Remember me',
                           style: TextStyle(
-                              fontSize: 10.0.sp, fontWeight: FontWeight.bold),
+                              fontSize: 10.0, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 20.h),
+                SizedBox(height: 20.0),
                 Container(
                   width: screenWidth,
-                  height: 50.h,
+                  height: 50.0,
                   child: ElevatedButton(
                     onPressed: _login,
                     child: Text(
                       'Sign in',
-                      style: TextStyle(fontSize: 10.sp),
+                      style: TextStyle(fontSize: 10.0),
                     ),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
@@ -246,79 +353,85 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 20.0),
                 Container(
                   width: screenWidth,
-                  height: 30.h,
+                  height: 30.0,
                   child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ForgotPasswordPage(),
-                            ));
-                      },
-                      child: Text(
-                        "Forgot the password?",
-                        style: TextStyle(fontSize: 10.sp, color: Colors.green),
-                      )),
-                ),
-                Container(
-                  width: screenWidth,
-                  height: 70.h,
-                  child: Center(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              EmailInputScreenForgotPassword(),
+                        ),
+                      );
+                    },
                     child: Text(
-                      "or continue with",
+                      "Forgot the password?",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10.sp,
+                        fontSize: 10.0,
+                        color: Colors.green,
                       ),
                     ),
                   ),
                 ),
                 Container(
                   width: screenWidth,
-                  height: 35.h,
+                  height: 70.0,
+                  child: Center(
+                    child: Text(
+                      "or continue with",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10.0,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: screenWidth,
+                  height: 35.0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       GoogleAuthButton(
-                        onPressed: () {},
+                        onPressed: handleGoogleSignIn,
                         style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
-                          buttonColor: Colors.white,
                           buttonType: AuthButtonType.icon,
+                          iconSize: 20.0,
+                          buttonColor: Colors.white,
+                          borderWidth: 1.0,
+                          borderColor: Colors.black12,
                         ),
                       ),
                       FacebookAuthButton(
-                        onPressed: () {},
+                        onPressed: handleFacebookAuth,
                         style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
+                          buttonType: AuthButtonType.icon,
+                          iconSize: 20.0,
                           buttonColor: Colors.white,
                           iconColor: Colors.blue,
-                          buttonType: AuthButtonType.icon,
+                          borderWidth: 1.0,
+                          borderColor: Colors.black12,
                         ),
                       ),
-                      AppleAuthButton(
-                        onPressed: () {},
+                      TwitterAuthButton(
+                        onPressed: handleTwitterAuth,
                         style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
+                          buttonType: AuthButtonType.icon,
+                          iconSize: 20.0,
                           buttonColor: Colors.white,
                           iconColor: Colors.black,
-                          buttonType: AuthButtonType.icon,
+                          borderWidth: 1.0,
+                          borderColor: Colors.black12,
                         ),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(12.0.r),
+                  padding: EdgeInsets.all(12.0),
                   child: Container(
                     width: screenWidth,
                     child: TextButton(
@@ -326,12 +439,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateAccountScreen()),
+                            builder: (context) => EmailInputScreen(),
+                          ),
                         );
                       },
                       child: Text(
                         "Don't have an account? Sign up",
-                        style: TextStyle(fontSize: 9.sp, color: Colors.green),
+                        style: TextStyle(
+                          fontSize: 9.0,
+                          color: Colors.green,
+                        ),
                       ),
                     ),
                   ),

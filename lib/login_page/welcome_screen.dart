@@ -107,24 +107,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               SizedBox(height: 10.h),
               isLoading
                   ? CircularProgressIndicator()
-                  : CustomAuthButton(
-                      authIcon: AuthIcon(
-                        iconPath: "assets/phoneicon.png",
-                        iconSize: 24.r,
-                      ),
+                  : TwitterAuthButton(
                       onPressed: () async {
                         setState(() {
                           isLoading = true;
                         });
-                        nextScreenReplace(context, FillProfileScreen());
+                        await handleTwitterAuth();
                         setState(() {
                           isLoading = false;
                         });
                       },
-                      text: 'Continue with Phone Number',
+                      text: 'Continue with twitter',
                       style: AuthButtonStyle(
                         iconColor: Colors.black,
-                        iconType: AuthIconType.secondary,
+                        iconSize: 24.r,
                         iconBackground: Colors.white,
                         buttonColor: Colors.white,
                         textStyle: TextStyle(
@@ -170,7 +166,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CreateAccountScreen(),
+                          builder: (context) => EmailInputScreen(),
                         ));
                   },
                   child: Text(
@@ -207,6 +203,41 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         handleAfterSignIn();
                       })));
             } else {
+              sp.saveDataToFirestore().then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future handleTwitterAuth() async {
+    final sp = context.read<FirebaseAuthService>();
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      openSnackbar(context, "Check your Internet connection", Colors.red);
+    } else {
+      await sp.signInWithTwitter().then((value) {
+        if (sp.hasError == true) {
+          openSnackbar(context, sp.errorCode.toString(), Colors.red);
+        } else {
+          // checking whether user exists or not
+          sp.checkUserExists().then((value) async {
+            if (value == true) {
+              // user exists
+              await sp.getUserDataFromFirestore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            } else {
+              // user does not exist
               sp.saveDataToFirestore().then((value) => sp
                   .saveDataToSharedPreferences()
                   .then((value) => sp.setSignIn().then((value) {

@@ -1,73 +1,145 @@
 import 'package:auth_buttons/auth_buttons.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flower_app/body_widgets/profile_page/fill_profile_screen.dart';
 import 'package:flower_app/login_page/login_screen1.dart';
+import 'package:flower_app/login_page/password_input_screen.dart';
 import 'package:flower_app/services/firebase_auth_services.dart';
+import 'package:flower_app/services/iternet_provider.dart';
+import 'package:flower_app/utils/next_screen.dart';
+import 'package:flower_app/utils/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class CreateAccountScreen extends StatefulWidget {
+class EmailInputScreen extends StatefulWidget {
   @override
-  _CreateAccountScreenState createState() => _CreateAccountScreenState();
+  _EmailInputScreenState createState() => _EmailInputScreenState();
 }
 
-class _CreateAccountScreenState extends State<CreateAccountScreen> {
+class _EmailInputScreenState extends State<EmailInputScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _obscureText = true;
   Color _emailIconColor = Colors.grey;
-  Color _passwordIconColor = Colors.grey;
-  bool _isChecked = false;
-  final FirebaseAuthService _authService = FirebaseAuthService();
 
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
-
-  void _createAccount() async {
+  void _goToPasswordScreen() {
     String email = _emailController.text;
-    String password = _passwordController.text;
-
-    User? user = await _authService.createAccount(email, password);
-    if (user != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginScreen(),
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Account Creation Failed'),
-          content: Text('Failed to create account. Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PasswordInputScreen(email: email),
+      ),
+    );
   }
 
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> handleFacebookAuth() async {
+    final sp = context.read<FirebaseAuthService>();
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      openSnackbar(context, "Check your Internet connection", Colors.red);
+    } else {
+      await sp.signInWithFacebook().then((value) {
+        if (sp.hasError == true) {
+          openSnackbar(context, sp.errorCode.toString(), Colors.red);
+        } else {
+          sp.checkUserExists().then((value) async {
+            if (value == true) {
+              await sp.getUserDataFromFirestore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            } else {
+              sp.saveDataToFirestore().then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> handleTwitterAuth() async {
+    final sp = context.read<FirebaseAuthService>();
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      openSnackbar(context, "Check your Internet connection", Colors.red);
+    } else {
+      await sp.signInWithTwitter().then((value) {
+        if (sp.hasError == true) {
+          openSnackbar(context, sp.errorCode.toString(), Colors.red);
+        } else {
+          sp.checkUserExists().then((value) async {
+            if (value == true) {
+              await sp.getUserDataFromFirestore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            } else {
+              sp.saveDataToFirestore().then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> handleGoogleSignIn() async {
+    final sp = context.read<FirebaseAuthService>();
+    final ip = context.read<InternetProvider>();
+    await ip.checkInternetConnection();
+
+    if (ip.hasInternet == false) {
+      openSnackbar(context, "Check your Internet connection", Colors.red);
+    } else {
+      await sp.signInWithGoogle().then((value) {
+        if (sp.hasError == true) {
+          openSnackbar(context, sp.errorCode.toString(), Colors.red);
+        } else {
+          sp.checkUserExists().then((value) async {
+            if (value == true) {
+              await sp.getUserDataFromFirestore(sp.uid).then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            } else {
+              sp.saveDataToFirestore().then((value) => sp
+                  .saveDataToSharedPreferences()
+                  .then((value) => sp.setSignIn().then((value) {
+                        handleAfterSignIn();
+                      })));
+            }
+          });
+        }
+      });
+    }
+  }
+
+  void handleAfterSignIn() {
+    Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+      nextScreenReplace(context, FillProfileScreen());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    // ignore: unused_local_variable
-    double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(),
@@ -79,7 +151,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(bottom: 10.h),
+                  padding: EdgeInsets.only(bottom: 10.h, top: 50.h),
                   child: Container(
                     width: screenWidth,
                     height: 40.h,
@@ -91,7 +163,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   height: 100.h,
                   child: Center(
                     child: Text(
-                      "Create Your Account",
+                      "Email Adresinizi Girin",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 12.sp,
@@ -136,102 +208,14 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10.h),
-                Container(
-                  height: 50.h,
-                  child: Focus(
-                    onFocusChange: (hasFocus) {
-                      setState(() {
-                        _passwordIconColor =
-                            hasFocus ? Colors.green : Colors.grey;
-                      });
-                    },
-                    child: TextField(
-                      cursorHeight: 0,
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                      ),
-                      controller: _passwordController,
-                      obscureText: _obscureText,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: _emailIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: _passwordIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        labelText: 'Password',
-                        labelStyle: TextStyle(fontSize: 10.sp),
-                        prefixIcon: Icon(Icons.lock,
-                            color: _passwordIconColor, size: 20.r),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            size: 20.r,
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: _passwordIconColor,
-                          ),
-                          onPressed: _togglePasswordVisibility,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                Container(
-                  width: screenWidth,
-                  height: 20.h,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 25.r),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Theme(
-                          data: Theme.of(context).copyWith(
-                            checkboxTheme: CheckboxThemeData(
-                              fillColor: WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return Colors.green;
-                                }
-                                return Colors.white;
-                              }),
-                            ),
-                          ),
-                          child: Checkbox(
-                            value: _isChecked,
-                            onChanged: (value) {
-                              setState(() {
-                                _isChecked = value!;
-                              });
-                            },
-                          ),
-                        ),
-                        Text(
-                          'Remember me',
-                          style: TextStyle(
-                              fontSize: 10.0.sp, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
                 SizedBox(height: 20.h),
                 Container(
                   width: screenWidth,
                   height: 50.h,
                   child: ElevatedButton(
-                    onPressed: _createAccount,
+                    onPressed: _goToPasswordScreen,
                     child: Text(
-                      'Sign up',
+                      'Continue',
                       style: TextStyle(fontSize: 10.sp),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -240,63 +224,65 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(
+                  height: 100.h,
+                ),
                 Container(
                   width: screenWidth,
-                  height: 120.h,
+                  height: 70.0,
                   child: Center(
                     child: Text(
                       "or continue with",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 10.sp,
+                        fontSize: 10.0,
                       ),
                     ),
                   ),
                 ),
                 Container(
                   width: screenWidth,
-                  height: 35.h,
+                  height: 35.0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       GoogleAuthButton(
-                        onPressed: () {},
+                        onPressed: handleGoogleSignIn,
                         style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
-                          buttonColor: Colors.white,
                           buttonType: AuthButtonType.icon,
+                          iconSize: 20.0,
+                          buttonColor: Colors.white,
+                          borderWidth: 1.0,
+                          borderColor: Colors.black12,
                         ),
                       ),
                       FacebookAuthButton(
-                        onPressed: () {},
+                        onPressed: handleFacebookAuth,
                         style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
+                          buttonType: AuthButtonType.icon,
+                          iconSize: 20.0,
                           buttonColor: Colors.white,
                           iconColor: Colors.blue,
-                          buttonType: AuthButtonType.icon,
+                          borderWidth: 1.0,
+                          borderColor: Colors.black12,
                         ),
                       ),
-                      AppleAuthButton(
-                        onPressed: () {},
+                      TwitterAuthButton(
+                        onPressed: handleTwitterAuth,
                         style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
+                          buttonType: AuthButtonType.icon,
+                          iconSize: 20.0,
                           buttonColor: Colors.white,
                           iconColor: Colors.black,
-                          buttonType: AuthButtonType.icon,
+                          borderWidth: 1.0,
+                          borderColor: Colors.black12,
                         ),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(12.0.r),
+                  padding: EdgeInsets.all(12.0),
                   child: Container(
                     width: screenWidth,
                     child: TextButton(
@@ -304,12 +290,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => LoginScreen()),
+                            builder: (context) => LoginScreen(),
+                          ),
                         );
                       },
                       child: Text(
-                        "Already have on account?",
-                        style: TextStyle(fontSize: 9.sp, color: Colors.green),
+                        "Already have a account? Sign in",
+                        style: TextStyle(
+                          fontSize: 9.0,
+                          color: Colors.green,
+                        ),
                       ),
                     ),
                   ),

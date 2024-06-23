@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
 import 'package:flower_app/utils/next_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 class FillProfileScreen extends StatefulWidget {
   @override
@@ -24,34 +27,61 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
 
   String _countryCode = '+1';
   String _gender = 'Male';
+  bool _isSocialSignIn = false; // Yeni durum değişkeni
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _profileImage = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
   }
 
-  void _saveProfile() {
-    String name = _nameController.text;
-    String surname = _surnameController.text;
-    String dob = _dobController.text;
-    String email = _emailController.text;
-    String phone = _phoneController.text;
+  Future<void> _loadProfile() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String uid = user?.uid ?? '';
 
-    print('Name: $name');
-    print('Surname: $surname');
-    print('DOB: $dob');
-    print('Email: $email');
-    print('Phone: $phone');
-    print('Country Code: $_countryCode');
-    print('Gender: $_gender');
-    completed(context);
+    // Giriş yöntemlerini kontrol et
+    List<String> signInMethods = await user!.providerData
+        .map((userInfo) => userInfo.providerId)
+        .toList();
+
+    _isSocialSignIn = signInMethods.contains('facebook.com') ||
+        signInMethods.contains('google.com') ||
+        signInMethods.contains('twitter.com');
+
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('profiles').doc(uid).get();
+
+    if (snapshot.exists) {
+      Map<String, dynamic>? data = snapshot.data();
+      _nameController.text = data?['name'] ?? '';
+      _surnameController.text = data?['surname'] ?? '';
+      _dobController.text = data?['dob'] ?? '';
+      _emailController.text = data?['email'] ?? '';
+      _phoneController.text = data?['phone'] ?? '';
+      _countryCode = data?['countryCode'] ?? '+1';
+      _gender = data?['gender'] ?? 'Male';
+
+      String profileImagePath = data?['profileImage'] ?? '';
+      if (profileImagePath.isNotEmpty) {
+        setState(() {
+          _profileImage = File(profileImagePath);
+        });
+      }
+    }
+
+    if (_isSocialSignIn) {
+      setState(() {
+        _emailController.text = user.email ?? "";
+      });
+    }
+    if (!_isSocialSignIn) {
+      // Eğer email/password ile giriş yapıldıysa ve Firestore'da profil bulunuyorsa
+      if (signInMethods.contains('password')) {
+        setState(() {
+          _emailController.text = user.email ?? "";
+        });
+      }
+    }
   }
 
   @override
@@ -59,6 +89,7 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
     // ignore: unused_local_variable
     double screenHeight = MediaQuery.of(context).size.height;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -117,19 +148,50 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20.0.h),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(
+                    height: 20.0.h,
+                  ),
                 _buildTextField(_nameController, 'Name', screenWidth),
-                SizedBox(height: 20.0.h),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(
+                    height: 20.0.h,
+                  ),
                 _buildTextField(_surnameController, 'Surname', screenWidth),
-                SizedBox(height: 20.0.h),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(
+                    height: 20.0.h,
+                  ),
                 _buildDateField(_dobController, 'Date of Birth', screenWidth),
-                SizedBox(height: 20.0.h),
-                _buildTextField(_emailController, 'Email', screenWidth),
-                SizedBox(height: 20.0.h),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(
+                    height: 20.0.h,
+                  ),
+                if (!_isSocialSignIn) // Eğer sosyal medya ile giriş yapılmışsa e-posta alanını gizleyin
+                  _buildTextField(_emailController, 'Email', screenWidth),
+                if (!_isSocialSignIn) SizedBox(height: 20.0.h),
                 _buildPhoneField(_phoneController, 'Phone Number', screenWidth),
-                SizedBox(height: 20.0.h),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(
+                    height: 20.0.h,
+                  ),
                 _buildDropdownField('Gender', screenWidth),
-                SizedBox(height: 20.0.h),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(
+                    height: 20.0.h,
+                  ),
                 Container(
                   width: screenWidth,
                   height: 50.h,
@@ -154,7 +216,8 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
   }
 
   Widget _buildTextField(
-      TextEditingController controller, String label, double screenWidth) {
+      TextEditingController controller, String label, double screenWidth,
+      {bool readOnly = false}) {
     return Container(
       height: 45.h,
       child: TextField(
@@ -163,6 +226,7 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
         ),
         cursorHeight: 0,
         controller: controller,
+        readOnly: readOnly,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(10),
             labelText: label,
@@ -194,25 +258,20 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
 
           if (pickedDate != null) {
             setState(() {
-              controller.text =
-                  '${pickedDate.month}/${pickedDate.day}/${pickedDate.year}';
+              controller.text = DateFormat('yyyy-MM-dd').format(pickedDate);
             });
           }
         },
         decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Color.fromARGB(255, 240, 240, 240),
-          suffixIcon: Icon(
-            Icons.calendar_today,
-            size: 15.r,
-          ),
-        ),
+            contentPadding: EdgeInsets.all(10),
+            labelText: label,
+            labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            fillColor: Color.fromARGB(255, 240, 240, 240)),
       ),
     );
   }
@@ -302,6 +361,37 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
       ),
     );
   }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    await FirebaseFirestore.instance.collection('profiles').doc(uid).set({
+      'name': _nameController.text,
+      'surname': _surnameController.text,
+      'dob': _dobController.text,
+      'email': _emailController.text,
+      'phone': _phoneController.text,
+      'countryCode': _countryCode,
+      'gender': _gender,
+      'profileImage': _profileImage?.path ?? '',
+    });
+    completed(context);
+    ;
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfilePage(),
+        ));
+  }
 }
 
 Future<dynamic> completed(context) {
@@ -330,7 +420,6 @@ Future<dynamic> completed(context) {
                         height: 100.h, child: Image.asset("assets/check.png")),
                   ),
                   SizedBox(height: 20.h),
-                  // Başarılı mesajı
                   Padding(
                     padding: EdgeInsets.all(8.0.r),
                     child: Text(
