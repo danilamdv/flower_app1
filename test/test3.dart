@@ -151,31 +151,38 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20.0.h,
-                ),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(height: 20.0.h),
                 _buildTextField(_nameController, 'Name', screenWidth),
-                SizedBox(
-                  height: 20.0.h,
-                ),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(height: 20.0.h),
                 _buildTextField(_surnameController, 'Surname', screenWidth),
-                SizedBox(
-                  height: 20.0.h,
-                ),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(height: 20.0.h),
                 _buildDateField(_dobController, 'Date of Birth', screenWidth),
-                SizedBox(
-                  height: 20.0.h,
-                ),
-                _buildTextField(_emailController, 'Email', screenWidth),
-                SizedBox(height: 20.0.h),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(height: 20.0.h),
+                if (!_isSocialSignIn)
+                  _buildTextField(_emailController, 'Email', screenWidth),
+                if (!_isSocialSignIn) SizedBox(height: 20.0.h),
                 _buildPhoneField(_phoneController, 'Phone Number', screenWidth),
-                SizedBox(
-                  height: 20.0.h,
-                ),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(height: 20.0.h),
                 _buildDropdownField('Gender', screenWidth),
-                SizedBox(
-                  height: 20.0.h,
-                ),
+                if (_isSocialSignIn)
+                  SizedBox(height: 30.0.h)
+                else
+                  SizedBox(height: 20.0.h),
                 Container(
                   width: screenWidth,
                   height: 50.h,
@@ -200,18 +207,15 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
   }
 
   Widget _buildTextField(
-    TextEditingController controller,
-    String label,
-    double screenWidth,
-  ) {
+      TextEditingController controller, String label, double screenWidth,
+      {bool readOnly = false}) {
     return Container(
       height: 45.h,
       child: TextField(
-        style: TextStyle(
-          fontSize: 10.sp,
-        ),
+        style: TextStyle(fontSize: 10.sp),
         cursorHeight: 0,
         controller: controller,
+        readOnly: readOnly,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.all(10),
             labelText: label,
@@ -262,87 +266,87 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
   }
 
   Widget _buildPhoneField(
-    TextEditingController controller,
-    String label,
-    double screenWidth,
-  ) {
+      TextEditingController controller, String label, double screenWidth) {
     return Container(
       height: 45.h,
-      child: TextField(
-        style: TextStyle(
-          fontSize: 10.sp,
-        ),
-        controller: controller,
-        keyboardType: TextInputType.phone,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(10),
-          labelText: label,
-          labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Color.fromARGB(255, 240, 240, 240),
-          prefixIcon: DropdownButton<String>(
-            value: _countryCode,
-            items:
-                <String>['+1', "+994", '+90', '+44', '+33'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Padding(
-                  padding: EdgeInsets.all(10.0.r),
-                  child: Text(
-                    value,
-                    style: TextStyle(fontSize: 10.sp),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 60.w,
+            child: DropdownButtonFormField<String>(
+              value: _countryCode,
+              onChanged: (newValue) {
+                setState(() {
+                  _countryCode = newValue!;
+                });
+              },
+              items: [
+                DropdownMenuItem(value: '+1', child: Text('+1')),
+                DropdownMenuItem(value: '+44', child: Text('+44')),
+                DropdownMenuItem(value: '+90', child: Text('+90')),
+              ],
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10),
+                  labelText: 'Code',
+                  labelStyle:
+                      TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: BorderSide.none,
                   ),
-                ),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _countryCode = newValue!;
-              });
-            },
-            underline: SizedBox(),
-            iconSize: 0.0,
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 240, 240, 240)),
+            ),
           ),
-        ),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: TextField(
+              style: TextStyle(fontSize: 10.sp),
+              cursorHeight: 0,
+              controller: controller,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10),
+                  labelText: label,
+                  labelStyle:
+                      TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 240, 240, 240)),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildDropdownField(String label, double screenWidth) {
     return Container(
-      alignment: Alignment.center,
-      height: 55.h,
+      height: 45.h,
       child: DropdownButtonFormField<String>(
         value: _gender,
-        items: <String>['Male', 'Female', 'Other'].map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 10.sp),
-            ),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
+        onChanged: (newValue) {
           setState(() {
             _gender = newValue!;
           });
         },
+        items: [
+          DropdownMenuItem(value: 'Male', child: Text('Male')),
+          DropdownMenuItem(value: 'Female', child: Text('Female')),
+        ],
         decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Color.fromARGB(255, 240, 240, 240),
-          labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-        ),
+            contentPadding: EdgeInsets.all(10),
+            labelText: label,
+            labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            fillColor: Color.fromARGB(255, 240, 240, 240)),
       ),
     );
   }
@@ -366,8 +370,9 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
     String email = _emailController.text.trim();
     String phone = _phoneController.text.trim();
 
-    if (name.isEmpty) {
-      _showMessage('Name is required');
+    // Check if any field is empty
+    if (name.isEmpty || surname.isEmpty || dob.isEmpty || phone.isEmpty) {
+      _showMessage('All fields are required');
       return;
     }
 
@@ -382,9 +387,10 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
 
     try {
       if (emailChanged && !_isSocialSignIn) {
+        // E-posta doğrulama
         await user.verifyBeforeUpdateEmail(email);
 
-        // Doğrulama işlemi tamamlandıktan sonra dinleyici ekleyerek profil ve kullanıcı verilerini güncelle
+        // E-posta doğrulandıktan sonra dinleme
         FirebaseAuth.instance.authStateChanges().listen((User? user) async {
           if (user != null && user.emailVerified && mounted) {
             // Firestore'daki "profiles" koleksiyonunu güncelle
@@ -410,13 +416,13 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
               'email': email,
             });
 
-            // Profil sayfasına yönlendir
             if (mounted) {
               nextScreenReplace(context, ProfilePage());
             }
           }
         });
       } else {
+        // Firestore'daki "profiles" koleksiyonunu güncelle
         await FirebaseFirestore.instance.collection('profiles').doc(uid).set({
           'name': name,
           'surname': surname,
@@ -428,14 +434,17 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
           'profileImage': profileImagePath,
         });
 
-        // Profil sayfasına yönlendir
+        // Firestore'daki "users" koleksiyonunu güncelle
+        await FirebaseFirestore.instance.collection('users').doc(uid).update({
+          'email': email,
+        });
+
         if (mounted) {
           nextScreenReplace(context, ProfilePage());
         }
       }
     } catch (e) {
-      // Hata durumunda profil sayfasına yönlendir
-      nextScreenReplace(context, ProfilePage());
+      _showMessage('An error occurred: $e');
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flower_app/body_widgets/profile_page/fill_profile_screen.dart';
+import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
 import 'package:flower_app/login_page/create_account.dart';
 import 'package:flower_app/login_page/forgot_password1.dart';
 import 'package:flower_app/services/firebase_auth_services.dart';
@@ -41,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => FillProfileScreen(),
+          builder: (context) => ProfilePage(),
         ),
       );
     } else {

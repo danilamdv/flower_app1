@@ -1,324 +1,85 @@
-import 'package:auth_buttons/auth_buttons.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flower_app/login_page/login_screen1.dart';
-import 'package:flower_app/services/firebase_auth_services.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+Future<void> _saveProfile() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  String uid = user?.uid ?? '';
 
-class CreateAccountScreen extends StatefulWidget {
-  @override
-  _CreateAccountScreenState createState() => _CreateAccountScreenState();
-}
+  String name = _nameController.text.trim();
+  String surname = _surnameController.text.trim();
+  String dob = _dobController.text.trim();
+  String email = _emailController.text.trim();
+  String phone = _phoneController.text.trim();
 
-class _CreateAccountScreenState extends State<CreateAccountScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _obscureText = true;
-  Color _emailIconColor = Colors.grey;
-  Color _passwordIconColor = Colors.grey;
-  bool _isChecked = false;
-  final FirebaseAuthService _authService = FirebaseAuthService();
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
+  // Check if any field is empty
+  if (name.isEmpty) {
+    _showMessage('Name is required');
+    return;
   }
 
-  void _createAccount() async {
-    String email = _emailController.text;
-    String password = _passwordController.text;
+  // Save profile image to Firestore
+  String profileImagePath = '';
+  if (_profileImage != null) {
+    profileImagePath = _profileImage!.path;
+  }
 
-    User? user = await _authService.createAccount(email, password);
-    if (user != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => LoginScreen(),
-        ),
-      );
+  // Check if email needs to be updated
+  bool emailChanged = email != user!.email;
+
+  try {
+    if (emailChanged && !_isSocialSignIn) {
+      // Eğer email değişikliği varsa ve sosyal medya ile giriş yapılmamışsa
+      // Email adresini güncelleyebilmek için doğrulama isteği gönder
+      await user.verifyBeforeUpdateEmail(email);
+
+      // Doğrulama işlemi tamamlandıktan sonra dinleyici ekleyerek profil ve kullanıcı verilerini güncelle
+      FirebaseAuth.instance.authStateChanges().listen((User? user) async {
+        if (user != null && user.emailVerified && mounted) {
+          // Firestore'daki "profiles" koleksiyonunu güncelle
+          await FirebaseFirestore.instance.collection('profiles').doc(uid).set({
+            'name': name,
+            'surname': surname,
+            'dob': dob,
+            'email': email,
+            'phone': phone,
+            'countryCode': _countryCode,
+            'gender': _gender,
+            'profileImage': profileImagePath,
+          });
+
+          // Firestore'daki "users" koleksiyonunu güncelle
+          await FirebaseFirestore.instance.collection('users').doc(uid).update({
+            'email': email,
+          });
+
+          // Profil sayfasına yönlendir
+          if (mounted) {
+            nextScreenReplace(context, ProfilePage());
+          }
+        }
+      });
     } else {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Account Creation Failed'),
-          content: Text('Failed to create account. Please try again later.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
+      // Email değişikliği yoksa veya sosyal medya ile giriş yapılmışsa
+      // Sadece profil ve kullanıcı verilerini güncelle
+      await FirebaseFirestore.instance.collection('profiles').doc(uid).set({
+        'name': name,
+        'surname': surname,
+        'dob': dob,
+        'email': email,
+        'phone': phone,
+        'countryCode': _countryCode,
+        'gender': _gender,
+        'profileImage': profileImagePath,
+      });
+
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'email': email,
+      });
+
+      // Profil sayfasına yönlendir
+      if (mounted) {
+        nextScreenReplace(context, ProfilePage());
+      }
     }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    // ignore: unused_local_variable
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0.r),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10.h),
-                  child: Container(
-                    width: screenWidth,
-                    height: 40.h,
-                    child: Image.asset("assets/leafphoto.png"),
-                  ),
-                ),
-                Container(
-                  width: screenWidth,
-                  height: 100.h,
-                  child: Center(
-                    child: Text(
-                      "Create Your Account",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 50.h,
-                  child: Focus(
-                    onFocusChange: (hasFocus) {
-                      setState(() {
-                        _emailIconColor = hasFocus ? Colors.green : Colors.grey;
-                      });
-                    },
-                    child: TextField(
-                      cursorHeight: 0,
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                      ),
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(15)),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        labelText: 'Email',
-                        labelStyle: TextStyle(fontSize: 10.sp),
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: _emailIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        prefixIcon: Icon(
-                          Icons.email,
-                          color: _emailIconColor,
-                          size: 20.r,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                Container(
-                  height: 50.h,
-                  child: Focus(
-                    onFocusChange: (hasFocus) {
-                      setState(() {
-                        _passwordIconColor =
-                            hasFocus ? Colors.green : Colors.grey;
-                      });
-                    },
-                    child: TextField(
-                      cursorHeight: 0,
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                      ),
-                      controller: _passwordController,
-                      obscureText: _obscureText,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: _emailIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                        focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: _passwordIconColor, width: 2),
-                            borderRadius: BorderRadius.circular(15)),
-                        labelText: 'Password',
-                        labelStyle: TextStyle(fontSize: 10.sp),
-                        prefixIcon: Icon(Icons.lock,
-                            color: _passwordIconColor, size: 20.r),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            size: 20.r,
-                            _obscureText
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: _passwordIconColor,
-                          ),
-                          onPressed: _togglePasswordVisibility,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                Container(
-                  width: screenWidth,
-                  height: 20.h,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 25.r),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Theme(
-                          data: Theme.of(context).copyWith(
-                            checkboxTheme: CheckboxThemeData(
-                              fillColor: WidgetStateProperty.resolveWith<Color>(
-                                  (Set<WidgetState> states) {
-                                if (states.contains(WidgetState.selected)) {
-                                  return Colors.green;
-                                }
-                                return Colors.white;
-                              }),
-                            ),
-                          ),
-                          child: Checkbox(
-                            value: _isChecked,
-                            onChanged: (value) {
-                              setState(() {
-                                _isChecked = value!;
-                              });
-                            },
-                          ),
-                        ),
-                        Text(
-                          'Remember me',
-                          style: TextStyle(
-                              fontSize: 10.0.sp, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.h),
-                Container(
-                  width: screenWidth,
-                  height: 50.h,
-                  child: ElevatedButton(
-                    onPressed: _createAccount,
-                    child: Text(
-                      'Sign up',
-                      style: TextStyle(fontSize: 10.sp),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.green,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  width: screenWidth,
-                  height: 120.h,
-                  child: Center(
-                    child: Text(
-                      "or continue with",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10.sp,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: screenWidth,
-                  height: 35.h,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      GoogleAuthButton(
-                        onPressed: () {},
-                        style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
-                          buttonColor: Colors.white,
-                          buttonType: AuthButtonType.icon,
-                        ),
-                      ),
-                      FacebookAuthButton(
-                        onPressed: () {},
-                        style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
-                          buttonColor: Colors.white,
-                          iconColor: Colors.blue,
-                          buttonType: AuthButtonType.icon,
-                        ),
-                      ),
-                      AppleAuthButton(
-                        onPressed: () {},
-                        style: AuthButtonStyle(
-                          borderColor: Colors.black12,
-                          borderWidth: 1,
-                          iconSize: 20.r,
-                          buttonColor: Colors.white,
-                          iconColor: Colors.black,
-                          buttonType: AuthButtonType.icon,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(12.0.r),
-                  child: Container(
-                    width: screenWidth,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()),
-                        );
-                      },
-                      child: Text(
-                        "Already have on account?",
-                        style: TextStyle(fontSize: 9.sp, color: Colors.green),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+  } catch (e) {
+    // Hata durumunda profil sayfasına yönlendir
+    nextScreenReplace(context, ProfilePage());
   }
 }
