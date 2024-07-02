@@ -8,15 +8,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CommunityPageSliverContent1 extends StatelessWidget {
   CommunityPageSliverContent1({
     super.key,
-    required this.screenWidth,
-    required this.screenHeight,
   });
-
-  final double screenWidth;
-  final double screenHeight;
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return SliverToBoxAdapter(
       child: Column(
@@ -40,7 +37,10 @@ class CommunityPageSliverContent1 extends StatelessWidget {
               child: Text(
                 "what do you want to ask or share?",
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.black54 , fontSize: 10.sp , ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                  fontSize: 10.sp,
+                ),
               ),
             ),
           ),
@@ -60,10 +60,7 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AskQuestionPage(
-                                screenWidth: screenWidth,
-                                screenHeight: screenHeight,
-                              ),
+                              builder: (context) => AskQuestionPage(),
                             ));
                       },
                       child: Row(
@@ -76,7 +73,8 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                             width: 7.w,
                           ),
                           Text(
-                            "ask", style:  TextStyle( fontSize: 12.sp   ),
+                            "ask",
+                            style: TextStyle(fontSize: 12.sp),
                           )
                         ],
                       )),
@@ -113,7 +111,10 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                           SizedBox(
                             width: 7.w,
                           ),
-                          Text("Answer" , style: TextStyle( fontSize: 12.0.sp ),)
+                          Text(
+                            "Answer",
+                            style: TextStyle(fontSize: 12.0.sp),
+                          )
                         ],
                       )),
                 ),
@@ -134,10 +135,7 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CreatePostPage(
-                                screenWidth: screenWidth,
-                                screenHeight: screenHeight,
-                              ),
+                              builder: (context) => CreatePostPage(),
                             ));
                       },
                       child: Row(
@@ -149,7 +147,10 @@ class CommunityPageSliverContent1 extends StatelessWidget {
                           SizedBox(
                             width: 7.w,
                           ),
-                          Text("Post" , style:  TextStyle( fontSize:  12.0.sp  ),)
+                          Text(
+                            "Post",
+                            style: TextStyle(fontSize: 12.0.sp),
+                          )
                         ],
                       )),
                 )

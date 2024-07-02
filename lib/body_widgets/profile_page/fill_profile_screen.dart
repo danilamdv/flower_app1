@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
 import 'package:flower_app/utils/next_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +17,18 @@ class FillProfileScreen extends StatefulWidget {
 
 class _FillProfileScreenState extends State<FillProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _surnameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-
   File? _profileImage;
   final ImagePicker _picker = ImagePicker();
+  String? _profileImageUrl;
 
   String _countryCode = '+1';
   String _gender = 'Male';
   bool _isSocialSignIn = false;
+  bool _isImagePickerActive = false; // Yeni state
 
   @override
   void initState() {
@@ -37,7 +39,7 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
   @override
   void dispose() {
     _nameController.dispose();
-    _surnameController.dispose();
+    _usernameController.dispose();
     _dobController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -48,7 +50,6 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
     User? user = FirebaseAuth.instance.currentUser;
     String uid = user?.uid ?? '';
 
-    // Giriş yöntemlerini kontrol et
     List<String> signInMethods = await user!.providerData
         .map((userInfo) => userInfo.providerId)
         .toList();
@@ -63,32 +64,102 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
     if (snapshot.exists) {
       Map<String, dynamic>? data = snapshot.data();
       _nameController.text = data?['name'] ?? '';
-      _surnameController.text = data?['surname'] ?? '';
+      _usernameController.text = data?['username'] ?? '';
       _dobController.text = data?['dob'] ?? '';
       _emailController.text = data?['email'] ?? '';
       _phoneController.text = data?['phone'] ?? '';
       _countryCode = data?['countryCode'] ?? '+1';
       _gender = data?['gender'] ?? 'Male';
+      _profileImageUrl = data?['profileImage'] ?? '';
 
-      String profileImagePath = data?['profileImage'] ?? '';
-      if (profileImagePath.isNotEmpty) {
-        setState(() {
-          _profileImage = File(profileImagePath);
-        });
+      // Boş veya geçersiz URL'ler için varsayılan resim URL'si kullan
+      if (_profileImageUrl == null || _profileImageUrl!.isEmpty) {
+        _profileImageUrl =
+            'https://via.placeholder.com/150'; // Varsayılan resim URL'si
       }
-    }
 
-    if (_isSocialSignIn) {
-      setState(() {
-        _emailController.text = user.email ?? "";
-      });
-    }
-    if (!_isSocialSignIn) {
-      if (signInMethods.contains('password')) {
+      if (_isSocialSignIn) {
         setState(() {
           _emailController.text = user.email ?? "";
         });
       }
+      if (!_isSocialSignIn) {
+        if (signInMethods.contains('password')) {
+          setState(() {
+            _emailController.text = user.email ?? "";
+          });
+        }
+      }
+    }
+  }
+
+  Future<String> _uploadProfileImage(File image) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    String uid = user?.uid ?? '';
+    String fileName =
+        'profile_images/$uid-${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    Reference storageRef = FirebaseStorage.instance.ref().child(fileName);
+    UploadTask uploadTask = storageRef.putFile(image);
+
+    TaskSnapshot snapshot = await uploadTask;
+    String downloadUrl = await snapshot.ref.getDownloadURL();
+
+    return downloadUrl;
+  }
+
+  void _pickImage() async {
+    if (_isImagePickerActive)
+      return; // Eğer bir resim seçme işlemi aktifse yeni işlem başlatma
+
+    setState(() {
+      _isImagePickerActive = true; // Resim seçme işlemini aktif olarak işaretle
+    });
+
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _profileImage = File(pickedFile.path);
+        });
+
+        String downloadUrl = await _uploadProfileImage(_profileImage!);
+
+        User? user = FirebaseAuth.instance.currentUser;
+        String uid = user?.uid ?? '';
+
+        // Kullanıcı belgesini kontrol et ve oluştur
+        DocumentReference profileRef =
+            FirebaseFirestore.instance.collection('profiles').doc(uid);
+        DocumentSnapshot snapshot = await profileRef.get();
+        if (!snapshot.exists) {
+          await profileRef.set({
+            'profileImage': downloadUrl,
+            'name': '',
+            'username': '',
+            'dob': '',
+            'email': '',
+            'phone': '',
+            'countryCode': '+1',
+            'gender': 'Male',
+          });
+        } else {
+          await profileRef.update({
+            'profileImage': downloadUrl,
+          });
+        }
+
+        setState(() {
+          _profileImageUrl = downloadUrl;
+          _profileImage = null; // Cihazdaki resmi temizle, sadece URL'den yükle
+        });
+      }
+    } catch (e) {
+      print("Image picking error: $e");
+    } finally {
+      setState(() {
+        _isImagePickerActive = false; // Resim seçme işlemini tamamla
+      });
     }
   }
 
@@ -123,10 +194,13 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
                     children: [
                       CircleAvatar(
                         radius: 50.r,
-                        backgroundImage: _profileImage != null
-                            ? FileImage(_profileImage!)
-                            : null,
-                        child: _profileImage == null
+                        backgroundImage: _profileImageUrl != null &&
+                                _profileImageUrl!.isNotEmpty
+                            ? NetworkImage(_profileImageUrl!)
+                            : AssetImage('assets/empty-profile.png')
+                                as ImageProvider,
+                        child: _profileImageUrl == null ||
+                                _profileImageUrl!.isEmpty
                             ? Icon(Icons.camera_alt, size: 40.r)
                             : null,
                       ),
@@ -158,7 +232,7 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
                 SizedBox(
                   height: 20.0.h,
                 ),
-                _buildTextField(_surnameController, 'Surname', screenWidth),
+                _buildTextField(_usernameController, 'Username', screenWidth),
                 SizedBox(
                   height: 20.0.h,
                 ),
@@ -234,17 +308,17 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
         controller: controller,
         readOnly: true,
         onTap: () async {
-          DateTime? pickedDate = await showDatePicker(
+          DateTime? selectedDate = await showDatePicker(
             context: context,
             initialDate: DateTime.now(),
             firstDate: DateTime(1900),
             lastDate: DateTime.now(),
           );
 
-          if (pickedDate != null) {
-            setState(() {
-              controller.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-            });
+          if (selectedDate != null) {
+            String formattedDate =
+                DateFormat('yyyy-MM-dd').format(selectedDate);
+            controller.text = formattedDate;
           }
         },
         decoration: InputDecoration(
@@ -262,198 +336,81 @@ class _FillProfileScreenState extends State<FillProfileScreen> {
   }
 
   Widget _buildPhoneField(
-    TextEditingController controller,
-    String label,
-    double screenWidth,
-  ) {
+      TextEditingController controller, String label, double screenWidth) {
     return Container(
       height: 45.h,
       child: TextField(
-        style: TextStyle(
-          fontSize: 10.sp,
-        ),
         controller: controller,
         keyboardType: TextInputType.phone,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(10),
-          labelText: label,
-          labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Color.fromARGB(255, 240, 240, 240),
-          prefixIcon: DropdownButton<String>(
-            value: _countryCode,
-            items:
-                <String>['+1', "+994", '+90', '+44', '+33'].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Padding(
-                  padding: EdgeInsets.all(10.0.r),
-                  child: Text(
-                    value,
-                    style: TextStyle(fontSize: 10.sp),
-                  ),
-                ),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                _countryCode = newValue!;
-              });
-            },
-            underline: SizedBox(),
-            iconSize: 0.0,
-          ),
-        ),
+            contentPadding: EdgeInsets.all(10),
+            labelText: label,
+            labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10.r),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            fillColor: Color.fromARGB(255, 240, 240, 240)),
       ),
     );
   }
 
   Widget _buildDropdownField(String label, double screenWidth) {
     return Container(
-      alignment: Alignment.center,
-      height: 55.h,
-      child: DropdownButtonFormField<String>(
+      height: 45.h,
+      padding: EdgeInsets.symmetric(horizontal: 10.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.r),
+        color: Color.fromARGB(255, 240, 240, 240),
+      ),
+      child: DropdownButton<String>(
         value: _gender,
-        items: <String>['Male', 'Female', 'Other'].map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(
-              value,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 10.sp),
-            ),
-          );
-        }).toList(),
         onChanged: (String? newValue) {
           setState(() {
             _gender = newValue!;
           });
         },
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Color.fromARGB(255, 240, 240, 240),
-          labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
+        items: <String>['Male', 'Female', 'Other']
+            .map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+        underline: SizedBox(), // Dropdown'daki underline'ı kaldırır
+        isExpanded: true, // Dropdown'u tam genişlikte yapar
+        style: TextStyle(
+          fontSize: 10.sp,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
         ),
       ),
     );
   }
 
-  void _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> _saveProfile() async {
+  void _saveProfile() async {
     User? user = FirebaseAuth.instance.currentUser;
     String uid = user?.uid ?? '';
 
-    String name = _nameController.text.trim();
-    String surname = _surnameController.text.trim();
-    String dob = _dobController.text.trim();
-    String email = _emailController.text.trim();
-    String phone = _phoneController.text.trim();
+    Map<String, dynamic> profileData = {
+      'name': _nameController.text,
+      'username': _usernameController.text,
+      'dob': _dobController.text,
+      'email': _emailController.text,
+      'phone': _phoneController.text,
+      'countryCode': _countryCode,
+      'gender': _gender,
+      'profileImage':
+          _profileImageUrl ?? '', // Varsayılan profil resmi URL'sini kaydedin
+    };
 
-    if (name.isEmpty) {
-      _showMessage('Name is required');
-      return;
-    }
+    await FirebaseFirestore.instance.collection('profiles').doc(uid).set(
+          profileData,
+          SetOptions(merge: true),
+        );
 
-    // Save profile image to Firestore
-    String profileImagePath = '';
-    if (_profileImage != null) {
-      profileImagePath = _profileImage!.path;
-    }
-
-    // Check if email needs to be updated
-    bool emailChanged = email != user!.email;
-
-    try {
-      if (emailChanged && !_isSocialSignIn) {
-        await user.verifyBeforeUpdateEmail(email);
-
-        // Doğrulama işlemi tamamlandıktan sonra dinleyici ekleyerek profil ve kullanıcı verilerini güncelle
-        FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-          if (user != null && user.emailVerified && mounted) {
-            // Firestore'daki "profiles" koleksiyonunu güncelle
-            await FirebaseFirestore.instance
-                .collection('profiles')
-                .doc(uid)
-                .set({
-              'name': name,
-              'surname': surname,
-              'dob': dob,
-              'email': email,
-              'phone': phone,
-              'countryCode': _countryCode,
-              'gender': _gender,
-              'profileImage': profileImagePath,
-            });
-
-            // Firestore'daki "users" koleksiyonunu güncelle
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(uid)
-                .update({
-              'email': email,
-            });
-
-            // Profil sayfasına yönlendir
-            if (mounted) {
-              nextScreenReplace(context, ProfilePage());
-            }
-          }
-        });
-      } else {
-        await FirebaseFirestore.instance.collection('profiles').doc(uid).set({
-          'name': name,
-          'surname': surname,
-          'dob': dob,
-          'email': email,
-          'phone': phone,
-          'countryCode': _countryCode,
-          'gender': _gender,
-          'profileImage': profileImagePath,
-        });
-
-        // Profil sayfasına yönlendir
-        if (mounted) {
-          nextScreenReplace(context, ProfilePage());
-        }
-      }
-    } catch (e) {
-      // Hata durumunda profil sayfasına yönlendir
-      nextScreenReplace(context, ProfilePage());
-    }
-  }
-
-  void _showMessage(String message) {
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      );
-    }
+    // Profil güncellemesi başarılı olduğunda profil sayfasına geçiş
+    nextScreen(context, ProfilePage());
   }
 }

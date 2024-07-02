@@ -1,19 +1,83 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flower_app/body_widgets/community_page/community_page0.dart';
+import 'package:flower_app/models/questions_models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class AskQuestionPage extends StatelessWidget {
-  const AskQuestionPage(
-      {super.key, required this.screenWidth, required this.screenHeight});
-  final double screenWidth;
-  final double screenHeight;
+class AskQuestionPage extends StatefulWidget {
+  const AskQuestionPage({super.key});
+
+  @override
+  State<AskQuestionPage> createState() => _AskQuestionPageState();
+}
+
+class _AskQuestionPageState extends State<AskQuestionPage> {
+  final TextEditingController _controller = TextEditingController();
+  String? _profileImageURL;
+  String? _name;
+  String? _username;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('profiles')
+          .doc(uid)
+          .get();
+      if (snapshot.exists) {
+        setState(() {
+          _profileImageURL = snapshot.data()?['profileImage'];
+          _name = snapshot.data()?['name'];
+          _username = snapshot.data()?['username'];
+        });
+      }
+    }
+  }
+
+  Future<void> _askQuestion() async {
+    final questionText = _controller.text;
+    final questionModel = Provider.of<QuestionModel>(context, listen: false);
+
+    if (_username != null &&
+        _profileImageURL != null &&
+        questionText.isNotEmpty) {
+      await questionModel.createQuestions(
+        _username!,
+        questionText,
+        _profileImageURL!,
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CommunityCard(), // Yönlendirme yapılacak sayfa
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Ekran boyutlandırmaları
+    // ignore: unused_local_variable
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Ask a question",
+          "Ask a Question",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.sp),
         ),
         leading: IconButton(
@@ -31,22 +95,24 @@ class AskQuestionPage extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: Container(
-                    child: CircleAvatar(
-                      radius: 25.r,
-                      backgroundImage: AssetImage("assets/profilphoto.jpg"),
-                    ),
+                  child: CircleAvatar(
+                    radius: 25.r,
+                    backgroundImage: _profileImageURL != null
+                        ? NetworkImage(_profileImageURL!)
+                        : AssetImage('assets/empty-profile.png')
+                            as ImageProvider,
+                    child: _profileImageURL == null
+                        ? Icon(Icons.camera_alt, size: 40.r)
+                        : null,
                   ),
                 ),
                 Expanded(
                   flex: 1,
-                  child: Container(
-                    child: Text(
-                      'Rohan B',
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  child: Text(
+                    _name ?? '',
+                    style: TextStyle(
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -55,49 +121,39 @@ class AskQuestionPage extends StatelessWidget {
                   child: Container(
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding:  EdgeInsets.only(right: 5.r),
+                      padding: EdgeInsets.only(right: 5.r),
                       child: IconButton(
-                          iconSize: 22.r,
-                          onPressed: () {},
-                          icon: Transform.rotate(
-                              angle: 1.7, child: Icon(CupertinoIcons.tags))),
+                        iconSize: 22.r,
+                        onPressed: () {},
+                        icon: Transform.rotate(
+                          angle: 1.7,
+                          child: Icon(CupertinoIcons.tags),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          Container(
-            height: 1.h,
-            color: Colors.grey,
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
+          Divider(),
+          SizedBox(height: 10.h),
           Padding(
-            padding:  EdgeInsets.only(left: 18.r),
+            padding: EdgeInsets.only(left: 18.r),
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                hintStyle: TextStyle( fontSize: 10.sp) ,
-                  hintText: 'Type your question here...',
-                  border: InputBorder.none),
+                hintStyle: TextStyle(fontSize: 10.sp),
+                hintText: 'Type your question here...',
+                border: InputBorder.none,
+              ),
             ),
           ),
         ],
       ),
-      floatingActionButton: SizedBox(
-        height: screenHeight * 0.055,
-        width: screenWidth * 0.23,
-        child: FloatingActionButton.extended(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-          label: Text(
-            "Ask",
-            style: TextStyle(color: Colors.white70 , fontSize: 10.sp),
-          ),
-          backgroundColor: const Color.fromARGB(170, 0, 106, 98),
-          onPressed: () {},
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _askQuestion,
+        child: Icon(Icons.send),
       ),
     );
   }

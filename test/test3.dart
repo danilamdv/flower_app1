@@ -1,468 +1,191 @@
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
-import 'package:flower_app/utils/next_screen.dart';
+import 'package:flower_app/models/post_models.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class FillProfileScreen extends StatefulWidget {
+class CommunityCardSliverContent4 extends StatefulWidget {
+  const CommunityCardSliverContent4({super.key});
+
   @override
-  _FillProfileScreenState createState() => _FillProfileScreenState();
+  _CommunityCardSliverContent4State createState() =>
+      _CommunityCardSliverContent4State();
 }
 
-class _FillProfileScreenState extends State<FillProfileScreen> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _surnameController = TextEditingController();
-  final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-
-  File? _profileImage;
-  final ImagePicker _picker = ImagePicker();
-
-  String _countryCode = '+1';
-  String _gender = 'Male';
-  bool _isSocialSignIn = false;
-
+class _CommunityCardSliverContent4State
+    extends State<CommunityCardSliverContent4> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _surnameController.dispose();
-    _dobController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _loadProfile() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    String uid = user?.uid ?? '';
-
-    // Giriş yöntemlerini kontrol et
-    List<String> signInMethods = await user!.providerData
-        .map((userInfo) => userInfo.providerId)
-        .toList();
-
-    _isSocialSignIn = signInMethods.contains('facebook.com') ||
-        signInMethods.contains('google.com') ||
-        signInMethods.contains('twitter.com');
-
-    DocumentSnapshot<Map<String, dynamic>> snapshot =
-        await FirebaseFirestore.instance.collection('profiles').doc(uid).get();
-
-    if (snapshot.exists) {
-      Map<String, dynamic>? data = snapshot.data();
-      _nameController.text = data?['name'] ?? '';
-      _surnameController.text = data?['surname'] ?? '';
-      _dobController.text = data?['dob'] ?? '';
-      _emailController.text = data?['email'] ?? '';
-      _phoneController.text = data?['phone'] ?? '';
-      _countryCode = data?['countryCode'] ?? '+1';
-      _gender = data?['gender'] ?? 'Male';
-
-      String profileImagePath = data?['profileImage'] ?? '';
-      if (profileImagePath.isNotEmpty) {
-        setState(() {
-          _profileImage = File(profileImagePath);
-        });
-      }
-    }
-
-    if (_isSocialSignIn) {
-      setState(() {
-        _emailController.text = user.email ?? "";
-      });
-    }
-    if (!_isSocialSignIn) {
-      if (signInMethods.contains('password')) {
-        setState(() {
-          _emailController.text = user.email ?? "";
-        });
-      }
-    }
+    Provider.of<PostModel>(context, listen: false).fetchPosts();
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          title: Text(
-            "Fill Your Profile",
-            style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(16.0.r),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: Stack(
+    return Consumer<PostModel>(
+      builder: (context, postModel, child) {
+        return SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final post = postModel.posts[index];
+              return Padding(
+                padding: EdgeInsets.only(bottom: 10.h),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: const Color.fromARGB(255, 206, 215, 219),
+                  ),
+                  height: screenHeight * 0.5,
+                  width: screenWidth,
+                  child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: 50.r,
-                        backgroundImage: _profileImage != null
-                            ? FileImage(_profileImage!)
-                            : null,
-                        child: _profileImage == null
-                            ? Icon(Icons.camera_alt, size: 40.r)
-                            : null,
-                      ),
-                      Positioned(
-                        right: 2.w,
-                        bottom: 5.h,
+                      Expanded(
+                        flex: 20,
                         child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(5)),
-                          child: Padding(
-                            padding: EdgeInsets.all(2.0.r),
-                            child: Icon(
-                              Icons.mode_edit_outline_outlined,
-                              color: Colors.white,
-                              size: 17.r,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 10.0.r),
+                                  child: CircleAvatar(
+                                    radius: 23.r,
+                                    backgroundImage: NetworkImage(post
+                                        .authorProfileImage), // Profil resmini güncelle
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      post.author,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10.sp),
+                                    ),
+                                    Text(
+                                      "${post.date.month}/${post.date.day}",
+                                      style: TextStyle(fontSize: 7.sp),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "Post",
+                                        style: TextStyle(fontSize: 9.sp),
+                                      ),
+                                      SizedBox(
+                                        width: 6.w,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 10.r),
+                                        child: Icon(
+                                          CupertinoIcons.photo_on_rectangle,
+                                          size: 20.r,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 58,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 15.r, right: 15.r),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: post.imageUrl != null
+                                  ? Image.network(
+                                      post.imageUrl!,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.asset(
+                                      "assets/flower1.jpg",
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
                           ),
                         ),
-                      )
+                      ),
+                      Expanded(
+                        flex: 8,
+                        child: Container(
+                          alignment: Alignment.bottomLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 20.r, right: 16.r),
+                            child: Text(
+                              post.text,
+                              style: TextStyle(fontSize: 10.sp),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 14,
+                        child: Container(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 5.r),
+                            child: Row(
+                              children: [
+                                TextButton.icon(
+                                    label: Text(
+                                      "43",
+                                      style: TextStyle(
+                                          fontSize: 9.sp, color: Colors.black),
+                                    ),
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      color: Colors.black,
+                                      CupertinoIcons.hand_thumbsup_fill,
+                                      size: 22.r,
+                                    )),
+                                TextButton.icon(
+                                    label: Text(
+                                      "Reply",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 11.sp),
+                                    ),
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      color: Colors.black,
+                                      CupertinoIcons.arrow_turn_up_left,
+                                      size: 22.r,
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                if (_isSocialSignIn)
-                  SizedBox(height: 30.0.h)
-                else
-                  SizedBox(height: 20.0.h),
-                _buildTextField(_nameController, 'Name', screenWidth),
-                if (_isSocialSignIn)
-                  SizedBox(height: 30.0.h)
-                else
-                  SizedBox(height: 20.0.h),
-                _buildTextField(_surnameController, 'Surname', screenWidth),
-                if (_isSocialSignIn)
-                  SizedBox(height: 30.0.h)
-                else
-                  SizedBox(height: 20.0.h),
-                _buildDateField(_dobController, 'Date of Birth', screenWidth),
-                if (_isSocialSignIn)
-                  SizedBox(height: 30.0.h)
-                else
-                  SizedBox(height: 20.0.h),
-                if (!_isSocialSignIn)
-                  _buildTextField(_emailController, 'Email', screenWidth),
-                if (!_isSocialSignIn) SizedBox(height: 20.0.h),
-                _buildPhoneField(_phoneController, 'Phone Number', screenWidth),
-                if (_isSocialSignIn)
-                  SizedBox(height: 30.0.h)
-                else
-                  SizedBox(height: 20.0.h),
-                _buildDropdownField('Gender', screenWidth),
-                if (_isSocialSignIn)
-                  SizedBox(height: 30.0.h)
-                else
-                  SizedBox(height: 20.0.h),
-                Container(
-                  width: screenWidth,
-                  height: 50.h,
-                  child: ElevatedButton(
-                    onPressed: _saveProfile,
-                    child: Text(
-                      'Continue',
-                      style: TextStyle(fontSize: 12.sp),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.green,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
+            childCount: postModel.posts.length,
           ),
-        ),
-      ),
+        );
+      },
     );
-  }
-
-  Widget _buildTextField(
-      TextEditingController controller, String label, double screenWidth,
-      {bool readOnly = false}) {
-    return Container(
-      height: 45.h,
-      child: TextField(
-        style: TextStyle(fontSize: 10.sp),
-        cursorHeight: 0,
-        controller: controller,
-        readOnly: readOnly,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(10),
-            labelText: label,
-            labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            fillColor: Color.fromARGB(255, 240, 240, 240)),
-      ),
-    );
-  }
-
-  Widget _buildDateField(
-      TextEditingController controller, String label, double screenWidth) {
-    return Container(
-      height: 45.h,
-      child: TextField(
-        controller: controller,
-        readOnly: true,
-        onTap: () async {
-          DateTime? pickedDate = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(1900),
-            lastDate: DateTime.now(),
-          );
-
-          if (pickedDate != null) {
-            setState(() {
-              controller.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-            });
-          }
-        },
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(10),
-            labelText: label,
-            labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            fillColor: Color.fromARGB(255, 240, 240, 240)),
-      ),
-    );
-  }
-
-  Widget _buildPhoneField(
-      TextEditingController controller, String label, double screenWidth) {
-    return Container(
-      height: 45.h,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 60.w,
-            child: DropdownButtonFormField<String>(
-              value: _countryCode,
-              onChanged: (newValue) {
-                setState(() {
-                  _countryCode = newValue!;
-                });
-              },
-              items: [
-                DropdownMenuItem(value: '+1', child: Text('+1')),
-                DropdownMenuItem(value: '+44', child: Text('+44')),
-                DropdownMenuItem(value: '+90', child: Text('+90')),
-              ],
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  labelText: 'Code',
-                  labelStyle:
-                      TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Color.fromARGB(255, 240, 240, 240)),
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: TextField(
-              style: TextStyle(fontSize: 10.sp),
-              cursorHeight: 0,
-              controller: controller,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  labelText: label,
-                  labelStyle:
-                      TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Color.fromARGB(255, 240, 240, 240)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDropdownField(String label, double screenWidth) {
-    return Container(
-      height: 45.h,
-      child: DropdownButtonFormField<String>(
-        value: _gender,
-        onChanged: (newValue) {
-          setState(() {
-            _gender = newValue!;
-          });
-        },
-        items: [
-          DropdownMenuItem(value: 'Male', child: Text('Male')),
-          DropdownMenuItem(value: 'Female', child: Text('Female')),
-        ],
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(10),
-            labelText: label,
-            labelStyle: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.r),
-              borderSide: BorderSide.none,
-            ),
-            filled: true,
-            fillColor: Color.fromARGB(255, 240, 240, 240)),
-      ),
-    );
-  }
-
-  void _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
-    }
-  }
-
-  Future<void> _saveProfile() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    String uid = user?.uid ?? '';
-
-    String name = _nameController.text.trim();
-    String surname = _surnameController.text.trim();
-    String dob = _dobController.text.trim();
-    String email = _emailController.text.trim();
-    String phone = _phoneController.text.trim();
-
-    // Check if any field is empty
-    if (name.isEmpty || surname.isEmpty || dob.isEmpty || phone.isEmpty) {
-      _showMessage('All fields are required');
-      return;
-    }
-
-    // Save profile image to Firestore
-    String profileImagePath = '';
-    if (_profileImage != null) {
-      profileImagePath = _profileImage!.path;
-    }
-
-    // Check if email needs to be updated
-    bool emailChanged = email != user!.email;
-
-    try {
-      if (emailChanged && !_isSocialSignIn) {
-        // E-posta doğrulama
-        await user.verifyBeforeUpdateEmail(email);
-
-        // E-posta doğrulandıktan sonra dinleme
-        FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-          if (user != null && user.emailVerified && mounted) {
-            // Firestore'daki "profiles" koleksiyonunu güncelle
-            await FirebaseFirestore.instance
-                .collection('profiles')
-                .doc(uid)
-                .set({
-              'name': name,
-              'surname': surname,
-              'dob': dob,
-              'email': email,
-              'phone': phone,
-              'countryCode': _countryCode,
-              'gender': _gender,
-              'profileImage': profileImagePath,
-            });
-
-            // Firestore'daki "users" koleksiyonunu güncelle
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(uid)
-                .update({
-              'email': email,
-            });
-
-            if (mounted) {
-              nextScreenReplace(context, ProfilePage());
-            }
-          }
-        });
-      } else {
-        // Firestore'daki "profiles" koleksiyonunu güncelle
-        await FirebaseFirestore.instance.collection('profiles').doc(uid).set({
-          'name': name,
-          'surname': surname,
-          'dob': dob,
-          'email': email,
-          'phone': phone,
-          'countryCode': _countryCode,
-          'gender': _gender,
-          'profileImage': profileImagePath,
-        });
-
-        // Firestore'daki "users" koleksiyonunu güncelle
-        await FirebaseFirestore.instance.collection('users').doc(uid).update({
-          'email': email,
-        });
-
-        if (mounted) {
-          nextScreenReplace(context, ProfilePage());
-        }
-      }
-    } catch (e) {
-      _showMessage('An error occurred: $e');
-    }
-  }
-
-  void _showMessage(String message) {
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      );
-    }
   }
 }

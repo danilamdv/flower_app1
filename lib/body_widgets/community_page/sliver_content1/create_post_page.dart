@@ -1,21 +1,124 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flower_app/body_widgets/community_page/community_page0.dart';
+import 'package:flower_app/models/post_models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
-class CreatePostPage extends StatelessWidget {
-  const CreatePostPage(
-      {super.key, required this.screenWidth, required this.screenHeight});
-  final double screenWidth;
-  final double screenHeight;
+class CreatePostPage extends StatefulWidget {
+  const CreatePostPage({super.key});
+
+  @override
+  _CreatePostPageState createState() => _CreatePostPageState();
+}
+
+class _CreatePostPageState extends State<CreatePostPage> {
+  final TextEditingController _controller = TextEditingController();
+  File? _selectedImage;
+  String? _profileImageURL;
+  String? _name;
+  String? _username;
+  bool _isLoading = false; // Yükleniyor durumu
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        String uid = user.uid;
+        DocumentSnapshot<Map<String, dynamic>> snapshot =
+            await FirebaseFirestore.instance
+                .collection('profiles')
+                .doc(uid)
+                .get();
+        if (snapshot.exists) {
+          setState(() {
+            _profileImageURL = snapshot.data()?['profileImage'];
+            _name = snapshot.data()?['name'];
+            _username = snapshot.data()?['username'];
+          });
+        }
+      }
+    } catch (e) {
+      print("Kullanıcı profili yüklenirken hata oluştu: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Profil bilgilerini yüklerken bir hata oluştu")),
+      );
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _sharePost() async {
+    if (_isLoading) return; // Eğer zaten yükleniyorsa, çık
+    if (_username == null || _profileImageURL == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Profil bilgilerini yükleyemedi")),
+      );
+      return;
+    }
+
+    final text = _controller.text;
+    final postModel = Provider.of<PostModel>(context, listen: false);
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await postModel.createPost(
+        _username!,
+        _profileImageURL!, // Profil resmini ekleyin
+        text,
+        _selectedImage,
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CommunityCard(), // Yönlendirme yapılacak sayfa
+        ),
+      );
+    } catch (e) {
+      print("Gönderi oluşturulurken hata oluştu: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Gönderi oluşturulurken bir hata oluştu")),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Ask a question",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.sp),
-        ),
+        title: Text("Post Oluştur"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -33,8 +136,14 @@ class CreatePostPage extends StatelessWidget {
                   flex: 1,
                   child: Container(
                     child: CircleAvatar(
-                      radius: 25.r,
-                      backgroundImage: AssetImage("assets/profilphoto.jpg"),
+                      radius: 25,
+                      backgroundImage: _profileImageURL != null
+                          ? NetworkImage(_profileImageURL!)
+                          : AssetImage('assets/empty-profile.png')
+                              as ImageProvider,
+                      child: _profileImageURL == null
+                          ? Icon(Icons.camera_alt, size: 40.r)
+                          : null,
                     ),
                   ),
                 ),
@@ -42,7 +151,7 @@ class CreatePostPage extends StatelessWidget {
                   flex: 1,
                   child: Container(
                     child: Text(
-                      'Rohan B',
+                      _name ?? '',
                       style: TextStyle(
                         fontSize: 10.sp,
                         fontWeight: FontWeight.bold,
@@ -57,14 +166,18 @@ class CreatePostPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                            iconSize: 22.r,
-                            onPressed: () {},
-                            icon: Icon(Icons.add_photo_alternate_outlined)),
+                          iconSize: 22.r,
+                          onPressed: _pickImage,
+                          icon: Icon(Icons.add_photo_alternate_outlined),
+                        ),
                         IconButton(
-                            iconSize: 22.r,
-                            onPressed: () {},
-                            icon: Transform.rotate(
-                                angle: 1.7, child: Icon(CupertinoIcons.tags))),
+                          iconSize: 22.r,
+                          onPressed: () {},
+                          icon: Transform.rotate(
+                            angle: 1.7,
+                            child: Icon(CupertinoIcons.tags),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -72,37 +185,38 @@ class CreatePostPage extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            height: 1.h,
-            color: Colors.grey,
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
+          Divider(),
           Padding(
             padding: EdgeInsets.only(left: 18.r),
             child: TextField(
+              controller: _controller,
               decoration: InputDecoration(
-                  hintStyle: TextStyle(fontSize: 10.sp),
-                  hintText: 'Say something...',
-                  border: InputBorder.none),
+                hintStyle: TextStyle(fontSize: 10.sp),
+                hintText: 'Type your question here...',
+                border: InputBorder.none,
+              ),
             ),
           ),
+          _selectedImage != null
+              ? Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Image.file(
+                    _selectedImage!,
+                    height: 150,
+                  ),
+                )
+              : Container(),
         ],
       ),
-      floatingActionButton: SizedBox(
-        height: screenHeight * 0.055,
-        width: screenWidth * 0.23,
-        child: FloatingActionButton.extended(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-          label: Text(
-            "Ask",
-            style: TextStyle(color: Colors.white70 , fontSize: 10.sp),
-          ),
-          backgroundColor: const Color.fromARGB(170, 0, 106, 98),
-          onPressed: () {},
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _isLoading
+            ? null
+            : _sharePost, // `sharePost` fonksiyonu burada çağrılır
+        child: _isLoading
+            ? CircularProgressIndicator(
+                color: Colors.white,
+              )
+            : Icon(Icons.send),
       ),
     );
   }

@@ -3,7 +3,6 @@ import 'package:flower_app/body_widgets/community_page/sliver_content1/sliver_co
 import 'package:flower_app/body_widgets/community_page/sliver_content2.dart';
 import 'package:flower_app/body_widgets/community_page/sliver_content3.dart';
 import 'package:flower_app/body_widgets/community_page/sliver_content4.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,10 +11,6 @@ class CommunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    
     return Scaffold(
       appBar: CommunityAppbar(),
       body: Container(
@@ -25,7 +20,7 @@ class CommunityCard extends StatelessWidget {
         ),
         child: CustomScrollView(
           slivers: [
-            CommunityPageSliverContent1(screenWidth: screenWidth, screenHeight: screenHeight),
+            CommunityPageSliverContent1(),
             SliverToBoxAdapter(
                 child: Container(
               height: 1.0.h,
@@ -36,29 +31,22 @@ class CommunityCard extends StatelessWidget {
                 height: 10.0.h,
               ),
             ),
-            CommunityCardSliverContent2(screenHeight: screenHeight),
+            CommunityCardSliverContent2(),
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 10.0.h,
               ),
             ),
-            CommunityCardSliverontent3(screenHeight: screenHeight),
+            CommunityCardSliverContent3(),
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 10.0.h,
               ),
             ),
-            CommunityCardSliverContent4(screenHeight: screenHeight)
+            CommunityCardSliverContent4()
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
