@@ -1,23 +1,9 @@
-import 'package:flower_app/models/post_models.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-
-class CommunityCardSliverContent4 extends StatefulWidget {
-  const CommunityCardSliverContent4({super.key});
-
+class _CommunityCardSliverContentState
+    extends State<CommunityCardSliverContent> {
   @override
-  _CommunityCardSliverContent4State createState() =>
-      _CommunityCardSliverContent4State();
-}
-
-class _CommunityCardSliverContent4State
-    extends State<CommunityCardSliverContent4> {
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<PostModel>(context, listen: false).fetchPosts();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<CommunityPageModel>(context, listen: false).fetchItems();
   }
 
   @override
@@ -25,166 +11,388 @@ class _CommunityCardSliverContent4State
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return Consumer<PostModel>(
-      builder: (context, postModel, child) {
+    return Consumer<CommunityPageModel>(
+      builder: (context, communityPageModel, child) {
         return SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              final post = postModel.posts[index];
+              final item = communityPageModel.items[index];
+              final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
               return Padding(
-                padding: EdgeInsets.only(bottom: 10.h),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: const Color.fromARGB(255, 206, 215, 219),
-                  ),
-                  height: screenHeight * 0.5,
-                  width: screenWidth,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        flex: 20,
-                        child: Container(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 10.0.r),
-                                  child: CircleAvatar(
-                                    radius: 23.r,
-                                    backgroundImage: NetworkImage(post
-                                        .authorProfileImage), // Profil resmini güncelle
+                padding: EdgeInsets.only(bottom: 5.h),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 206, 215, 219),
+                    ),
+                    height:
+                        item is Post ? screenHeight * 0.5 : screenHeight * 0.25,
+                    width: screenWidth,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: item is Post ? 20 : 35,
+                          child: Container(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 10.0.r),
+                                    child: CircleAvatar(
+                                      radius: 23.r,
+                                      backgroundImage:
+                                          NetworkImage(item.authorProfileImage),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      post.author,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 10.sp),
-                                    ),
-                                    Text(
-                                      "${post.date.month}/${post.date.day}",
-                                      style: TextStyle(fontSize: 7.sp),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                Expanded(
+                                  flex: 1,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Post",
-                                        style: TextStyle(fontSize: 9.sp),
+                                        item.author,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 10.sp),
                                       ),
-                                      SizedBox(
-                                        width: 6.w,
+                                      Text(
+                                        "${item.date.month}/${item.date.day}",
+                                        style: TextStyle(fontSize: 7.sp),
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 10.r),
-                                        child: Icon(
-                                          CupertinoIcons.photo_on_rectangle,
-                                          size: 20.r,
-                                        ),
-                                      )
                                     ],
                                   ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 58,
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 15.r, right: 15.r),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: post.imageUrl != null
-                                  ? Image.network(
-                                      post.imageUrl!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.asset(
-                                      "assets/flower1.jpg",
-                                      fit: BoxFit.cover,
+                                Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          item is Post ? "Post" : "Question",
+                                          style: TextStyle(fontSize: 9.sp),
+                                        ),
+                                        SizedBox(width: 6.w),
+                                        Padding(
+                                          padding: EdgeInsets.only(right: 10.r),
+                                          child: item is Post
+                                              ? Icon(
+                                                  CupertinoIcons
+                                                      .photo_on_rectangle,
+                                                  size: 20.r)
+                                              : Icon(CupertinoIcons.text_bubble,
+                                                  size: 20.r),
+                                        ),
+                                      ],
                                     ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 8,
-                        child: Container(
-                          alignment: Alignment.bottomLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20.r, right: 16.r),
-                            child: Text(
-                              post.text,
-                              style: TextStyle(fontSize: 10.sp),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 14,
-                        child: Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 5.r),
-                            child: Row(
-                              children: [
-                                TextButton.icon(
-                                    label: Text(
-                                      "43",
-                                      style: TextStyle(
-                                          fontSize: 9.sp, color: Colors.black),
-                                    ),
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      color: Colors.black,
-                                      CupertinoIcons.hand_thumbsup_fill,
-                                      size: 22.r,
-                                    )),
-                                TextButton.icon(
-                                    label: Text(
-                                      "Reply",
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 11.sp),
-                                    ),
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      color: Colors.black,
-                                      CupertinoIcons.arrow_turn_up_left,
-                                      size: 22.r,
-                                    )),
+                                  ),
+                                )
                               ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        if (item is Post && item.imageUrl != null)
+                          Expanded(
+                            flex: 58,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 15.r, right: 15.r),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    item.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    height: 170.h,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        Expanded(
+                          flex: item is Post ? 8 : 40,
+                          child: Container(
+                            alignment: item is Post
+                                ? Alignment.bottomLeft
+                                : Alignment.topLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 20.r, right: 16.r),
+                              child: Text(
+                                item.text,
+                                style: TextStyle(fontSize: 10.sp),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: item is Post ? 14 : 25,
+                          child: Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 5.r),
+                              child: Row(
+                                children: [
+                                  TextButton.icon(
+                                    label: Text("43",
+                                        style: TextStyle(
+                                            fontSize: 9.sp,
+                                            color: Colors.black)),
+                                    onPressed: () {},
+                                    icon: Icon(
+                                        CupertinoIcons.hand_thumbsup_fill,
+                                        size: 22.r,
+                                        color: Colors.black),
+                                  ),
+                                  TextButton.icon(
+                                    label: Text("Reply",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 11.sp)),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        builder: (context) =>
+                                            CommentBottomSheet(
+                                          itemId: item.id,
+                                          isPost: item is Post,
+                                        ),
+                                      );
+                                    },
+                                    icon: Icon(
+                                        CupertinoIcons.arrow_turn_up_left,
+                                        size: 22.r,
+                                        color: Colors.black),
+                                  ),
+                                  Spacer(),
+                                  PopupMenuButton<String>(
+                                    onSelected: (String value) {
+                                      if (value == 'Delete') {
+                                        _showDeleteDialog(item);
+                                      } else if (value == 'Report') {
+                                        // Report işlemi burada yapılacak
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return [
+                                        if (item.userId == currentUserId)
+                                          PopupMenuItem<String>(
+                                            value: 'Delete',
+                                            child: Text('Delete'),
+                                          ),
+                                        PopupMenuItem<String>(
+                                          value: 'Report',
+                                          child: Text('Report'),
+                                        ),
+                                      ];
+                                    },
+                                    icon: Icon(Icons.more_horiz),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
             },
-            childCount: postModel.posts.length,
+            childCount: communityPageModel.items.length,
           ),
         );
+      },
+    );
+  }
+
+  void _showDeleteDialog(CommunityItem item) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Confirmation'),
+        content: Text('Are you sure you want to delete this item?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              _deleteItem(item);
+              Navigator.pop(context);
+            },
+            child: Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _deleteItem(CommunityItem item) {
+    final communityPageModel =
+        Provider.of<CommunityPageModel>(context, listen: false);
+    if (item is Post) {
+      communityPageModel.deletePost(item.id);
+    } else if (item is Question) {
+      communityPageModel.deleteQuestion(item.id);
+    }
+  }
+}
+
+class _CommentBottomSheetState extends State<CommentBottomSheet> {
+  final TextEditingController _commentController = TextEditingController();
+  late Future<List<Map<String, dynamic>>> _commentsFuture;
+  String? _currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _commentsFuture = fetchComments();
+    _currentUserId = FirebaseAuth.instance.currentUser?.uid;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchComments() {
+    return Provider.of<CommunityPageModel>(context, listen: false)
+        .fetchComments(widget.itemId, widget.isPost);
+  }
+
+  void _addComment() async {
+    final text = _commentController.text.trim();
+    if (text.isNotEmpty) {
+      await Provider.of<CommunityPageModel>(context, listen: false)
+          .addComment(widget.itemId, text, widget.isPost);
+      _commentController.clear();
+      setState(() {
+        _commentsFuture = fetchComments();
+      });
+    }
+  }
+
+  void _deleteComment(String commentId) async {
+    try {
+      await Provider.of<CommunityPageModel>(context, listen: false)
+          .deleteComment(widget.itemId, commentId, widget.isPost);
+      setState(() {
+        _commentsFuture = fetchComments();
+      });
+    } catch (e) {
+      print("Comment deletion error: $e");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: _commentsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          final comments = snapshot.data ?? [];
+
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: comments.isEmpty
+                      ? Center(child: Text('No comments yet'))
+                      : ListView.builder(
+                          itemCount: comments.length,
+                          itemBuilder: (context, index) {
+                            final comment = comments[index];
+                            final commentDate =
+                                (comment['date'] as Timestamp).toDate();
+                            final commentId =
+                                comment['id']; // Ensure commentId is used here
+
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(comment['authorProfileImage']),
+                              ),
+                              title: Text(comment['author']),
+                              subtitle: Text(comment['text']),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    timeago.format(commentDate,
+                                        locale: 'en_short'),
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 12.sp),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.more_horiz),
+                                    onPressed: () {
+                                      if (comment['userId'] == _currentUserId) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Text('Delete Comment'),
+                                            content: Text(
+                                                'Are you sure you want to delete this comment?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                child: Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  _deleteComment(commentId);
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text('Delete'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                ),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _commentController,
+                          decoration: InputDecoration(
+                            hintText: 'Write a comment...',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.send),
+                        onPressed: _addComment,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
       },
     );
   }

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flower_app/models/community_page_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -336,101 +335,56 @@ class _CommentBottomSheetState extends State<CommentBottomSheet> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(child: Text("Error: ${snapshot.error}"));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text("No comments found"));
         } else {
-          final comments = snapshot.data ?? [];
-
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.7,
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Expanded(
-                  child: comments.isEmpty
-                      ? Center(child: Text('No comments yet'))
-                      : ListView.builder(
-                          itemCount: comments.length,
-                          itemBuilder: (context, index) {
-                            final comment = comments[index];
-                            final commentDate =
-                                (comment['date'] as Timestamp).toDate();
-                            final commentId =
-                                comment['uid']; // Ensure commentId is used here
-
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(comment['authorProfileImage']),
+          final comments = snapshot.data!;
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: comments.length,
+                  itemBuilder: (context, index) {
+                    final comment = comments[index];
+                    return ListTile(
+                      title: Text(comment['text']),
+                      subtitle: Text(timeago.format(comment['date'].toDate())),
+                      trailing: comment['uid'] == _currentUserId
+                          ? IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () => _deleteComment(
+                                comment['commentId'],
                               ),
-                              title: Text(comment['author']),
-                              subtitle: Text(comment['text']),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    timeago.format(commentDate,
-                                        locale: 'en_short'),
-                                    style: TextStyle(
-                                        color: Colors.grey, fontSize: 12.sp),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.more_horiz),
-                                    onPressed: () {
-                                      if (comment['uid'] == _currentUserId) {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: Text('Delete Comment'),
-                                            content: Text(
-                                                'Are you sure you want to delete this comment?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.pop(context),
-                                                child: Text('Cancel'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  _deleteComment(commentId);
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text('Delete'),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                            )
+                          : null,
+                    );
+                  },
                 ),
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _commentController,
-                          decoration: InputDecoration(
-                            hintText: 'Write a comment...',
-                            border: OutlineInputBorder(),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _commentController,
+                        decoration: InputDecoration(
+                          hintText: 'Add a comment...',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.send),
-                        onPressed: _addComment,
-                      ),
-                    ],
-                  ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: _addComment,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           );
         }
       },

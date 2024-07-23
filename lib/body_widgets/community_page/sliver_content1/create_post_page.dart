@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flower_app/body_widgets/community_page/community_page0.dart';
-import 'package:flower_app/models/post_models.dart';
+import 'package:flower_app/models/community_page_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class CreatePostPage extends StatefulWidget {
-  const CreatePostPage({super.key});
+  const CreatePostPage({Key? key}) : super(key: key);
 
   @override
   _CreatePostPageState createState() => _CreatePostPageState();
@@ -23,7 +23,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String? _profileImageURL;
   String? _name;
   String? _username;
-  bool _isLoading = false; // Yükleniyor durumu
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -69,7 +69,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Future<void> _sharePost() async {
-    if (_isLoading) return; // Eğer zaten yükleniyorsa, çık
+    if (_isLoading) return;
     if (_username == null || _profileImageURL == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Profil bilgilerini yükleyemedi")),
@@ -78,16 +78,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
 
     final text = _controller.text;
-    final postModel = Provider.of<PostModel>(context, listen: false);
+    final communityPageModel =
+        Provider.of<CommunityPageModel>(context, listen: false);
 
     setState(() {
       _isLoading = true;
     });
 
     try {
-      await postModel.createPost(
+      await communityPageModel.createPost(
         _username!,
-        _profileImageURL!, // Profil resmini ekleyin
+        _profileImageURL!,
         text,
         _selectedImage,
       );
@@ -95,7 +96,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => CommunityCard(), // Yönlendirme yapılacak sayfa
+          builder: (context) => CommunityCard(),
         ),
       );
     } catch (e) {
@@ -112,8 +113,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -209,13 +208,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _isLoading
-            ? null
-            : _sharePost, // `sharePost` fonksiyonu burada çağrılır
+        onPressed: _isLoading ? null : _sharePost,
         child: _isLoading
-            ? CircularProgressIndicator(
-                color: Colors.white,
-              )
+            ? CircularProgressIndicator(color: Colors.white)
             : Icon(Icons.send),
       ),
     );

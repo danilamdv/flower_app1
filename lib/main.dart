@@ -7,8 +7,7 @@ import 'package:flower_app/body_widgets/community_page/community_page0.dart';
 import 'package:flower_app/body_widgets/home_screen_page/homescreen_page0.dart';
 import 'package:flower_app/body_widgets/profile_page/profile_page.dart';
 import 'package:flower_app/bottomnavigatonbar/custom_bottom_navbar.dart';
-import 'package:flower_app/models/post_models.dart';
-import 'package:flower_app/models/questions_models.dart';
+import 'package:flower_app/models/community_page_model.dart';
 import 'package:flower_app/services/firebase_auth_services.dart';
 import 'package:flower_app/services/iternet_provider.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +25,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => FirebaseAuthService()),
         ChangeNotifierProvider(create: (_) => InternetProvider()),
-        ChangeNotifierProvider(
-          create: (_) => QuestionModel(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => PostModel(),
-        ),
+        ChangeNotifierProvider(create: (_) => CommunityPageModel()),
       ],
       child: const MyApp(),
     ),

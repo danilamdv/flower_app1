@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flower_app/body_widgets/community_page/community_page0.dart';
-import 'package:flower_app/models/questions_models.dart';
+import 'package:flower_app/models/community_page_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class AskQuestionPage extends StatefulWidget {
-  const AskQuestionPage({super.key});
+  const AskQuestionPage({Key? key}) : super(key: key);
 
   @override
-  State<AskQuestionPage> createState() => _AskQuestionPageState();
+  _AskQuestionPageState createState() => _AskQuestionPageState();
 }
 
 class _AskQuestionPageState extends State<AskQuestionPage> {
@@ -47,12 +47,13 @@ class _AskQuestionPageState extends State<AskQuestionPage> {
 
   Future<void> _askQuestion() async {
     final questionText = _controller.text;
-    final questionModel = Provider.of<QuestionModel>(context, listen: false);
+    final communityPageModel =
+        Provider.of<CommunityPageModel>(context, listen: false);
 
     if (_username != null &&
         _profileImageURL != null &&
         questionText.isNotEmpty) {
-      await questionModel.createQuestions(
+      await communityPageModel.createQuestion(
         _username!,
         questionText,
         _profileImageURL!,
@@ -61,7 +62,7 @@ class _AskQuestionPageState extends State<AskQuestionPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CommunityCard(), // Yönlendirme yapılacak sayfa
+          builder: (context) => CommunityCard(),
         ),
       );
     }
@@ -69,9 +70,6 @@ class _AskQuestionPageState extends State<AskQuestionPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Ekran boyutlandırmaları
-    // ignore: unused_local_variable
-    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(

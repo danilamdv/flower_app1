@@ -1,8 +1,7 @@
 import 'package:flower_app/appbar/community_appbar.dart';
-import 'package:flower_app/body_widgets/community_page/sliver_content1/sliver_content1.dart';
+import 'package:flower_app/body_widgets/community_page/community_card_sliver_content.dart';
+import 'package:flower_app/body_widgets/community_page/sliver_content1.dart';
 import 'package:flower_app/body_widgets/community_page/sliver_content2.dart';
-import 'package:flower_app/body_widgets/community_page/sliver_content3.dart';
-import 'package:flower_app/body_widgets/community_page/sliver_content4.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -37,13 +36,7 @@ class CommunityCard extends StatelessWidget {
                 height: 10.0.h,
               ),
             ),
-            CommunityCardSliverContent3(),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 10.0.h,
-              ),
-            ),
-            CommunityCardSliverContent4()
+            CommunityCardSliverContent(),
           ],
         ),
       ),

@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 
 abstract class CommunityItem {
   final String id;
-
   final String author;
   final String authorProfileImage;
   final DateTime date;
@@ -192,7 +191,28 @@ class CommunityPageModel with ChangeNotifier {
     }
   }
 
-  Future<void> deleteItem(CommunityItem item) async {
+  Future<List<Map<String, dynamic>>> fetchComments(
+      String itemId, bool isPost) async {
+    final collection = isPost ? 'posts' : 'questions';
+    final snapshot = await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(itemId)
+        .collection('comments')
+        .orderBy('date', descending: true)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return {
+        'commentId': doc.id,
+        'text': data['text'],
+        'userId': data['userId'],
+        'date': data['date'],
+      };
+    }).toList();
+  }
+
+  Future<void> deletePost(String postId) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
 
@@ -201,17 +221,60 @@ class CommunityPageModel with ChangeNotifier {
         return;
       }
 
-      String collection = item is Post ? 'posts' : 'questions';
-      if (item.userId == currentUser.uid) {
-        await _firestore.collection(collection).doc(item.id).delete();
-        _items.removeWhere((i) => i.id == item.id);
+      DocumentSnapshot postSnapshot =
+          await _firestore.collection('posts').doc(postId).get();
+
+      Post post = Post.fromMap(
+          postSnapshot.id, postSnapshot.data() as Map<String, dynamic>);
+
+      if (post.userId == currentUser.uid) {
+        await _firestore.collection('posts').doc(postId).delete();
+        _items.removeWhere((item) => item is Post && item.id == postId);
         notifyListeners();
       } else {
-        print("User is not the owner of the item");
+        print("User is not the owner of the post");
       }
     } catch (e) {
-      print("${item.runtimeType} deletion error: $e");
+      print("Post deletion error: $e");
     }
+  }
+
+  Future<void> deleteQuestion(String questionId) async {
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser == null) {
+        print("User not logged in");
+        return;
+      }
+
+      DocumentSnapshot questionSnapshot =
+          await _firestore.collection('questions').doc(questionId).get();
+
+      Question question = Question.fromMap(
+          questionSnapshot.id, questionSnapshot.data() as Map<String, dynamic>);
+
+      if (question.userId == currentUser.uid) {
+        await _firestore.collection('questions').doc(questionId).delete();
+        _items.removeWhere((item) => item is Question && item.id == questionId);
+        notifyListeners();
+      } else {
+        print("User is not the owner of the question");
+      }
+    } catch (e) {
+      print("Question deletion error: $e");
+    }
+  }
+
+  Future<void> deleteComment(
+      String itemId, String commentId, bool isPost) async {
+    final collection = isPost ? 'posts' : 'questions';
+    await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(itemId)
+        .collection('comments')
+        .doc(commentId)
+        .delete();
   }
 
   Future<void> createPost(
@@ -301,23 +364,6 @@ class CommunityPageModel with ChangeNotifier {
     }
   }
 
-  Future<List<Map<String, dynamic>>> fetchComments(
-      String itemId, bool isPost) async {
-    try {
-      final collection = isPost ? 'posts' : 'questions';
-      final snapshot = await _firestore
-          .collection(collection)
-          .doc(itemId)
-          .collection('comments')
-          .orderBy('date', descending: true)
-          .get();
-      return snapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      print("Comments fetch error: $e");
-      throw e;
-    }
-  }
-
   Future<void> addComment(String itemId, String text, bool isPost) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
@@ -326,26 +372,15 @@ class CommunityPageModel with ChangeNotifier {
         return;
       }
 
-      DocumentSnapshot userProfileSnapshot =
-          await _firestore.collection('profiles').doc(currentUser.uid).get();
-
-      if (!userProfileSnapshot.exists) {
-        print("User profile not found");
-        return;
-      }
-
-      final userProfile = userProfileSnapshot.data() as Map<String, dynamic>;
-      final author = userProfile['username'];
-      final authorProfileImage = userProfile['profileImage'];
-
       final comment = {
-        'author': author,
-        'authorProfileImage': authorProfileImage,
+        'author': currentUser.displayName,
+        'authorProfileImage': currentUser.photoURL,
         'text': text,
         'date': Timestamp.now(),
+        'uid': currentUser.uid
       };
-
       final collection = isPost ? 'posts' : 'questions';
+
       await _firestore
           .collection(collection)
           .doc(itemId)
